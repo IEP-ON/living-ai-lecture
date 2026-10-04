@@ -1,0 +1,5 @@
+리디주식회사에서 제공한 리디바탕 글꼴을 사용했습니다.
+공식 출처: https://ridicorp.com/ridibatang/
+글꼴의 저작권은 리디주식회사가 소유합니다.
+SIL Open Font License 1.1 전문: RIDIBatang_OFL.txt
+기존 교재 폴더의 RIDIBatang.otf를 수정하지 않고 함께 포함했습니다.

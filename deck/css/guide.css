@@ -1,0 +1,73 @@
+/* 강사 화면: 청중 화면과 말할 내용을 나란히 확인합니다. */
+body.guide { height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 24px 32px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.course { margin: 0 0 8px; color: var(--green); font-size: 13px; font-weight: 600; letter-spacing: .035em; }
+.top h1 { margin: 0; font-size: 28px; font-weight: 680; letter-spacing: -.04em; line-height: 1.2; }
+.link { margin: 9px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.top-actions { display: flex; align-items: center; gap: 14px; flex: none; }
+.plan, .clock { margin: 0; font-variant-numeric: tabular-nums; }
+.plan { color: var(--muted); font-size: 13px; }
+.clock { min-width: 4.5ch; font-size: 22px; font-weight: 550; letter-spacing: -.02em; }
+.quiet, .primary, .mover button { border-radius: 8px; font-size: 14px; font-weight: 550; min-height: 40px; padding: 10px 16px; }
+.quiet, .mover button { border: 1px solid #cbd5cb; background: #fff; color: var(--char); }
+.primary { border: 1px solid var(--green); background: var(--green); color: #fff; }
+.primary:hover { background: var(--forest); }
+.quiet:hover, .mover button:hover { background: #eaf0e8; }
+button:disabled { opacity: .38; cursor: default; }
+.layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 236px minmax(0, 1fr); }
+.rail { margin: 0; padding: 18px 12px; overflow: auto; border-right: 1px solid var(--line); }
+.rail ol { margin: 0; padding: 0; list-style: none; }
+.rail li + li { margin-top: 5px; }
+.rail button { width: 100%; display: grid; grid-template-columns: 2rem 1fr; gap: 7px; align-items: baseline; text-align: left; border: 0; border-radius: 7px; padding: 14px 12px; background: transparent; color: var(--char); font-size: 14px; line-height: 1.45; }
+.rail button small { grid-column: 2; color: var(--muted); font-size: 12px; font-weight: 400; }
+.rail .n { font-variant-numeric: tabular-nums; font-weight: 500; color: var(--muted); }
+.rail button:hover { background: #e8ede4; }
+.rail button.is-on { background: #fff; box-shadow: inset 3px 0 0 var(--green); font-weight: 650; }
+.rail button.is-on .n { color: var(--green); }
+.work { min-width: 0; overflow: auto; padding: 32px; display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(320px, 1fr); grid-template-rows: auto min-content; align-content: start; gap: 28px; }
+.preview { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 2px; background: var(--paper); box-shadow: 0 4px 22px rgba(26, 45, 34, .06), 0 0 0 1px var(--line); grid-row: 1 / 3; align-self: start; position: sticky; top: 0; }
+.preview .canvas { width: 1280px; height: 720px; transform-origin: top left; }
+#sheets { min-width: 0; }
+.sheet { display: none; max-width: 44rem; }
+.sheet.is-on { display: block; }
+.sheet h2 { margin: 0; font-size: 27px; font-weight: 650; letter-spacing: -.035em; line-height: 1.3; }
+.meta { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+.block { margin-top: 28px; }
+.block h3 { margin: 0 0 12px; color: var(--green); font-size: 13px; font-weight: 650; }
+.say p, .point { margin: 0; font-size: 18px; line-height: 1.8; letter-spacing: -.012em; }
+.say p + p { margin-top: 1em; }
+.point { color: var(--muted); font-size: 16px; }
+.mover { grid-column: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; max-width: 44rem; padding-top: 22px; border-top: 1px solid var(--line); }
+.mover .next-name { margin: 0 0 0 5px; color: var(--muted); font-size: 13px; }
+@media (max-width: 1180px) {
+  .work { display: block; }
+  .preview { position: relative; max-width: 880px; margin-bottom: 32px; }
+  .mover { margin-top: 30px; }
+}
+@media (max-width: 860px) {
+  body.guide { overflow: auto; height: auto; }
+  .top { align-items: stretch; flex-direction: column; gap: 20px; padding: 24px; }
+  .top-actions { flex-wrap: wrap; gap: 12px; }
+  .layout { grid-template-columns: 1fr; height: auto; }
+  .rail { max-height: 210px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .work { overflow: visible; padding: 24px; }
+}
+@media print {
+  body.guide { height: auto; overflow: visible; background: #fff; }
+  .top { padding: 0 0 16px; }
+  .top-actions, .rail, .preview, .mover, .link { display: none !important; }
+  .layout, .work { display: block; height: auto; overflow: visible; }
+  .work { padding: 0; }
+  .sheet { display: block !important; max-width: none; padding: 20px 0; border-bottom: 1px solid #ccc; break-inside: avoid; }
+  .sheet h2 { font-size: 22px; }
+  .block { margin-top: 18px; }
+  .say p, .point { font-size: 12.5pt; }
+}

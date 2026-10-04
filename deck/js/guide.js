@@ -1,0 +1,247 @@
+(function () {
+  if (!window.DECK || !Array.isArray(DECK.slides) || !DECK.slides.length) {
+    document.body.textContent = "js/deck-data.js를 읽지 못했습니다.";
+    return;
+  }
+
+  const list = document.getElementById("list");
+  const sheets = document.getElementById("sheets");
+  const preview = document.getElementById("preview-frame");
+  const link = document.getElementById("link");
+  const clock = document.getElementById("clock");
+  const timerButton = document.getElementById("timer");
+  let index = -1;
+  let elapsed = 0;
+  let ticking = 0;
+
+  document.getElementById("course").textContent = DECK.course || "";
+  document.getElementById("doc-title").textContent = DECK.title;
+  document.title = DECK.title + " · 교안";
+
+  const planned = DECK.slides.reduce(function (sum, slide) {
+    return sum + (Number(slide.note && slide.note.minutes) || 0);
+  }, 0);
+  document.getElementById("plan").textContent = DECK.timingLabel || (planned ? "예정 " + planned + "분" : "");
+
+  function clamp(n) {
+    n = Number(n);
+    if (!Number.isFinite(n)) n = 0;
+    return Math.max(0, Math.min(DECK.slides.length - 1, n));
+  }
+
+  function readHash() {
+    const matched = /^#(\d+)$/.exec(location.hash);
+    return matched ? Number(matched[1]) - 1 : 0;
+  }
+
+  function paragraphs(text) {
+    return String(text || "").split(/\n\n+/).map(function (part) {
+      return part.trim();
+    }).filter(Boolean);
+  }
+
+  function durationText(minutes) {
+    const seconds = Math.round(minutes * 60);
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return (m ? m + "분" : "") + (m && s ? " " : "") + (s ? s + "초" : "");
+  }
+
+  DECK.slides.forEach(function (slide, i) {
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    const num = document.createElement("span");
+    num.className = "n";
+    num.textContent = String(i + 1).padStart(2, "0");
+    const label = document.createElement("span");
+    label.textContent = LectureSlides.slideLabel(slide);
+    button.append(num, label);
+    const minutes = Number(slide.note && slide.note.minutes) || 0;
+    if (minutes) {
+      const small = document.createElement("small");
+      small.textContent = "목표 " + durationText(minutes);
+      button.appendChild(small);
+    }
+    button.addEventListener("click", function () { go(i); });
+    item.appendChild(button);
+    list.appendChild(item);
+
+    const sheet = document.createElement("article");
+    sheet.className = "sheet";
+    const h = document.createElement("h2");
+    h.textContent = LectureSlides.slideLabel(slide);
+    const meta = document.createElement("p");
+    meta.className = "meta";
+    meta.textContent = (i + 1) + " / " + DECK.slides.length + (minutes ? " · 이 장 목표 " + durationText(minutes) : "");
+    sheet.append(h, meta);
+
+    const sayBlock = document.createElement("section");
+    sayBlock.className = "block";
+    const sayTitle = document.createElement("h3");
+    sayTitle.textContent = "말할 것";
+    const say = document.createElement("div");
+    say.className = "say";
+    const parts = paragraphs(slide.note && slide.note.say);
+    if (!parts.length) {
+      const p = document.createElement("p");
+      p.textContent = "이 장에서 할 말을 note.say에 적습니다.";
+      say.appendChild(p);
+    } else {
+      parts.forEach(function (part) {
+        const p = document.createElement("p");
+        part.split("\n").forEach(function (line, lineIndex) {
+          if (lineIndex) p.appendChild(document.createElement("br"));
+          p.appendChild(document.createTextNode(line));
+        });
+        say.appendChild(p);
+      });
+    }
+    sayBlock.append(sayTitle, say);
+    sheet.appendChild(sayBlock);
+
+    if (slide.note && slide.note.point) {
+      const pointBlock = document.createElement("section");
+      pointBlock.className = "block";
+      const pointTitle = document.createElement("h3");
+      pointTitle.textContent = "화면에서 짚을 것";
+      const point = document.createElement("p");
+      point.className = "point";
+      point.textContent = slide.note.point;
+      pointBlock.append(pointTitle, point);
+      sheet.insertBefore(pointBlock, sayBlock);
+    }
+    if (slide.note && Array.isArray(slide.note.sources) && slide.note.sources.length) {
+      const sources = document.createElement("details");
+      sources.className = "source-notes";
+      const summary = document.createElement("summary");
+      summary.textContent = "개념 근거와 그림 출처";
+      sources.appendChild(summary);
+      const list = document.createElement("ul");
+      slide.note.sources.forEach(function (source) {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.textContent = source.label;
+        link.href = source.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+      sources.appendChild(list);
+      sheet.appendChild(sources);
+    }
+    sheets.appendChild(sheet);
+  });
+
+  function fitPreview() {
+    const box = document.querySelector(".preview");
+    const scale = box.clientWidth / 1280;
+    preview.style.transform = "scale(" + scale + ")";
+  }
+
+  function paint() {
+    const buttons = list.querySelectorAll("button");
+    buttons.forEach(function (button, i) {
+      const on = i === index;
+      button.classList.toggle("is-on", on);
+      if (on) button.setAttribute("aria-current", "true");
+      else button.removeAttribute("aria-current");
+    });
+    if (buttons[index]) buttons[index].scrollIntoView({ block: "nearest" });
+    sheets.querySelectorAll(".sheet").forEach(function (sheet, i) {
+      sheet.classList.toggle("is-on", i === index);
+    });
+    preview.replaceChildren(LectureSlides.buildSlide(DECK.slides[index], index));
+    const shown = preview.firstChild;
+    shown.classList.add("is-on");
+    shown.setAttribute("aria-hidden", "false");
+    fitPreview();
+    document.getElementById("prev").disabled = index === 0;
+    document.getElementById("next").disabled = index === DECK.slides.length - 1;
+    const upcoming = DECK.slides[index + 1];
+    document.getElementById("next-name").textContent = upcoming
+      ? "다음  " + LectureSlides.slideLabel(upcoming)
+      : "마지막 장입니다";
+  }
+
+  function go(n, opts) {
+    opts = opts || {};
+    const next = clamp(n);
+    const changed = next !== index;
+    index = next;
+    LectureSync.setIndex(index);
+    if (changed || opts.force) paint();
+    const hash = "#" + (index + 1);
+    if (!opts.fromHash && location.hash !== hash) history.replaceState(null, "", hash);
+    if (!opts.silent) LectureSync.emit(index);
+  }
+
+  function markLinked() {
+    link.textContent = "슬라이드와 같은 장을 보고 있습니다";
+  }
+
+  function fmt(total) {
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    const pad = function (n) { return String(n).padStart(2, "0"); };
+    return h ? h + ":" + pad(m) + ":" + pad(s) : pad(m) + ":" + pad(s);
+  }
+
+  document.getElementById("prev").addEventListener("click", function () { go(index - 1); });
+  document.getElementById("next").addEventListener("click", function () { go(index + 1); });
+  document.getElementById("open-slides").addEventListener("click", function () {
+    const win = LectureSync.open("slides", index);
+    if (win) markLinked();
+  });
+  timerButton.addEventListener("click", function () {
+    if (ticking) {
+      clearInterval(ticking);
+      ticking = 0;
+      timerButton.textContent = "시간 재기";
+      return;
+    }
+    ticking = setInterval(function () {
+      elapsed += 1;
+      clock.textContent = fmt(elapsed);
+    }, 1000);
+    timerButton.textContent = "일시정지";
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    const selected = String(window.getSelection() || "");
+    if (selected && (e.key === "ArrowLeft" || e.key === "ArrowRight")) return;
+    if (e.key === "ArrowRight" || e.key === "PageDown") {
+      e.preventDefault();
+      go(index + 1);
+    } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+      e.preventDefault();
+      go(index - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      go(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      go(DECK.slides.length - 1);
+    }
+  });
+
+  window.addEventListener("hashchange", function () { go(readHash(), { fromHash: true }); });
+  window.addEventListener("resize", fitPreview);
+  if (window.ResizeObserver) new ResizeObserver(fitPreview).observe(document.querySelector(".preview"));
+
+  LectureSync.on(function (n) {
+    if (n == null) {
+      markLinked();
+      return;
+    }
+    if (!Number.isInteger(n)) return;
+    markLinked();
+    go(n, { silent: true });
+  });
+  go(readHash(), { silent: true, force: true });
+  LectureSync.hello();
+})();

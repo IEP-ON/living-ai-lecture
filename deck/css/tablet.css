@@ -1,0 +1,42 @@
+/* 웹 교안의 장 이동과 태블릿 읽기 배치 */
+.quick-nav { display:flex; align-items:center; gap:10px; padding:10px 24px; border-bottom:1px solid var(--line); background:var(--paper); flex:none; }
+.quick-nav button,.quick-nav select { min-height:44px; font:inherit; font-size:15px; border:1px solid var(--line); border-radius:6px; background:var(--paper); color:var(--ink); padding:8px 14px; }
+.quick-nav select { flex:1; min-width:0; max-width:560px; }
+.quick-nav button { flex:none; cursor:pointer; }
+.quick-nav button:disabled { opacity:.4; cursor:default; }
+@media screen and (max-width:1180px) {
+  body.guide { height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+  .top { flex-direction:row; padding:12px 18px; gap:16px; align-items:center; }
+  .top h1 { font-size:21px; }
+  .top .course,.top .link,.top .plan { display:none; }
+  .top-actions { flex-wrap:nowrap; gap:8px; }
+  .clock { font-size:17px; }
+  .quiet,.primary { padding:8px 11px; min-height:40px; }
+  .quick-nav { padding:8px 18px; }
+  .layout { display:flex; flex:1; min-height:0; height:auto; }
+  .rail { display:none; }
+  .work { flex:1; min-height:0; padding:14px 18px; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+  .preview { width:min(100%,64vh); width:min(100%,64dvh); flex:none; align-self:center; position:relative; grid-row:auto; max-width:none; margin:0; }
+  #sheets { min-height:0; flex:1; overflow:auto; overscroll-behavior:contain; padding:3px 6px 28px; }
+  .sheet { max-width:none; }
+  .sheet h2 { font-size:24px; }
+  .block { margin-top:22px; }
+  .say p { font-size:19px; line-height:1.85; }
+  .mover { display:none; }
+}
+@media screen and (min-width:900px) and (max-width:1180px) {
+  .work { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:minmax(0,1fr); gap:24px; }
+  .preview { width:100%; align-self:start; }
+  #sheets { height:100%; }
+}
+@media screen and (max-width:600px) {
+  .top { padding:10px 12px; gap:12px; }
+  .top h1 { font-size:17px; }
+  .top .clock,.top #timer { display:none; }
+  .primary { font-size:12px; white-space:nowrap; }
+  .quick-nav { padding:8px 12px; gap:6px; }
+  .quick-nav button,.quick-nav select { font-size:14px; padding:7px 9px; }
+  .work { padding:12px; gap:14px; }
+  .say p { font-size:18px; }
+}
+@media print { .quick-nav { display:none; } }

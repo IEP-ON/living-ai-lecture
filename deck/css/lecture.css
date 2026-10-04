@@ -1,0 +1,33 @@
+/* 이 강의에만 적용하는 배치. 템플릿의 글꼴·색·기본 여백을 유지한다. */
+.rows p { white-space: pre-line; }
+.design-profile .slide-head { top: 76px; }
+.design-profile .slide-head h1 { font-size: 78px; line-height: 1.12; }
+.design-profile .slide-head .subtitle { margin-top: 20px; font-size: 27px; }
+.design-profile.has-subtitle .rows { top: 244px; bottom: 116px; }
+.design-profile .rows { grid-template-columns: 1fr; }
+.design-profile .rows li { grid-template-columns: .78fr 1.22fr; column-gap: 48px; }
+.design-profile .rows strong { font-size: 29px; }
+.design-profile .rows p { font-size: 24px; line-height: 1.45; }
+.design-profile .rows li:first-child strong { color: var(--green); }
+
+.layout-figure.has-labels .media { top: 168px; height: 352px; }
+.layout-figure.has-subtitle.has-labels .media { top: 190px; height: 330px; }
+.figure-labels { position: absolute; left: 76px; right: 76px; top: 541px; display: grid; grid-template-columns: repeat(var(--label-count, 3), 1fr); gap: 26px; text-align: center; }
+.figure-labels p { font-size: 28px; line-height: 1.3; font-weight: 650; letter-spacing: -.025em; }
+.layout-figure.has-labels .cap { top: 608px; font-size: 22px; }
+
+.design-example .rows { top: 212px; bottom: 146px; }
+.design-example .rows li { grid-template-columns: .56fr 1.44fr; column-gap: 38px; }
+.design-example .rows strong { color: var(--green); font-size: 31px; }
+.design-example .rows p { color: var(--ink); font-size: 33px; line-height: 1.5; }
+.design-question { background: var(--forest); color: #f6f8f3; }
+.design-question .quote-copy .qmark { color: #bdd0c4; }
+.design-question .quote-copy .by { color: #d4ded6; }
+.design-question .logo { display: none; }
+.design-question .pagenum { color: #c0d0c5; }
+.design-request .rows strong { font-size: 30px; }
+.design-request .rows p { font-size: 26px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}

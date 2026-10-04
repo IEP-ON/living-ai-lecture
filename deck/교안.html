@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>강사용 교안</title>
+  <link rel="stylesheet" href="css/base.css?v=2">
+  <link rel="stylesheet" href="css/slides.css?v=2">
+  <link rel="stylesheet" href="css/lecture.css?v=1">
+  <link rel="stylesheet" href="css/editorial.css?v=2">
+  <link rel="stylesheet" href="css/guide.css?v=2">
+  <link rel="stylesheet" href="css/lecture-guide.css?v=1">
+  <link rel="stylesheet" href="css/tablet.css?v=1">
+</head>
+<body class="guide">
+  <header class="top">
+    <div>
+      <p class="course" id="course"></p>
+      <h1 id="doc-title">교안</h1>
+      <p class="link" id="link">슬라이드 열기를 누르면 장이 같이 넘어갑니다</p>
+    </div>
+    <div class="top-actions">
+      <p class="plan" id="plan"></p>
+      <p class="clock" id="clock">00:00</p>
+      <button type="button" class="quiet" id="timer">시간 재기</button>
+      <button type="button" class="primary" id="open-slides">슬라이드 열기</button>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="rail" aria-label="장 목록">
+      <ol id="list"></ol>
+    </nav>
+    <main class="work">
+      <div class="preview" aria-hidden="true">
+        <div class="canvas" id="preview-frame"></div>
+      </div>
+      <div id="sheets"></div>
+      <div class="mover">
+        <button type="button" id="prev">이전</button>
+        <button type="button" id="next">다음</button>
+        <p class="next-name" id="next-name"></p>
+      </div>
+    </main>
+  </div>
+  <script src="js/deck-data.js?v=renew2"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/editorial-layouts.js?v=2"></script>
+  <script src="js/slides.js?v=renew2"></script>
+  <script src="js/guide.js"></script>
+  <script src="js/tablet.js?v=1"></script>
+</body>
+</html>
