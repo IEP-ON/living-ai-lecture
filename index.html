@@ -1,5 +1,51 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="0;url=deck/교안.html"><title>학교의 일을 AI와 함께 · 교안</title>
-<script>location.replace('deck/교안.html'+location.hash);</script></head>
-<body><a href="deck/교안.html">슬라이드와 강사용 교안 열기</a></body></html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>질문에서 결과물까지 · 교안</title>
+  <style>
+    @font-face { font-family: "Pretendard Variable"; src: url("deck/fonts/PretendardVariable.woff2") format("woff2-variations"); font-weight: 45 920; font-display: swap; }
+    :root { --ink: #141816; --paper: #f7f6f2; --forest: #1c4a3c; --accent: #13805a; --muted: #5f6862; --line: #dfe3dd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Pretendard Variable", Pretendard, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 56px 20px 64px; }
+    .course { margin: 0 0 10px; color: var(--accent); font-size: 14px; font-weight: 650; letter-spacing: .03em; }
+    h1 { margin: 0; font-size: 40px; font-weight: 800; letter-spacing: -.045em; line-height: 1.2; }
+    .lead { margin: 12px 0 34px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+    ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+    li { padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .part { margin: 0 0 4px; color: var(--accent); font-size: 13px; font-weight: 700; }
+    h2 { margin: 0; font-size: 24px; font-weight: 760; letter-spacing: -.035em; }
+    .what { margin: 6px 0 16px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .go { display: flex; flex-wrap: wrap; gap: 8px; }
+    .go a { padding: 10px 16px; border-radius: 10px; border: 1px solid #cbd5cb; background: #fff; color: var(--ink); font-size: 15px; font-weight: 650; text-decoration: none; }
+    .go a.main { border-color: var(--forest); background: var(--forest); color: #fff; }
+    .go a:hover { background: #eaf0e8; }
+    .go a.main:hover { background: var(--accent); }
+    .foot { margin: 34px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="course">교사를 위한 에이전트 AI 실습 연수</p>
+    <h1>질문에서 결과물까지</h1>
+    <p class="lead">강사용 교안과 발표 화면입니다. 교안에서 ‘슬라이드 열기’를 누르면 발표 화면이 따로 뜨고 장이 같이 넘어갑니다.</p>
+    <ol>
+      <li>
+        <p class="part">1부</p>
+        <h2>도입과 개론</h2>
+        <p class="what">자기소개 · 시연 · 연수 소개부터 개론(배운다 · 말한다 · 틀린다 · 펼친다 · 고른다 · 일한다 · 시작한다)까지 45장</p>
+        <p class="go"><a class="main" href="deck/교안.html">교안 열기</a><a href="deck/index.html">발표 화면만</a></p>
+      </li>
+      <li>
+        <p class="part">2부</p>
+        <h2>모듈 사이 이야기</h2>
+        <p class="what">이미지 → 수업설계 → 행정 → 바이브코딩 → 마무리, 모듈마다 들어가기 · 실습 뒤 32장과 AI가 만드는 동안 꺼내는 이야기 카드</p>
+        <p class="go"><a class="main" href="modules/교안.html">교안 열기</a><a href="modules/index.html">발표 화면만</a><a href="modules/기다릴때.html">기다릴 때 카드</a></p>
+      </li>
+    </ol>
+    <p class="foot">같은 기기에서 연 교안과 발표 화면은 장 넘김이 같이 움직입니다. 서로 다른 기기 사이의 원격 넘김은 지원하지 않습니다.<br>Copyright © 2026 이성엽. 포함 글꼴의 라이선스는 각 폴더의 fonts에 있습니다.</p>
+  </main>
+</body>
+</html>

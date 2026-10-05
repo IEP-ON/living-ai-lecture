@@ -1,7 +1,0 @@
-.source-notes { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 14px; line-height: 1.6; }
-.source-notes summary { cursor: pointer; color: var(--green); }
-.source-notes ul { padding-left: 1.2em; }
-.source-notes li + li { margin-top: 8px; }
-.source-notes a { color: var(--green); overflow-wrap: anywhere; }
-.plan { max-width: 150px; line-height: 1.5; }
-@media print { .source-notes { display: block; font-size: 10pt; } }

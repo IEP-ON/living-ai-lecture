@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">믿을지 판단하는 세 가지</title>
+  <desc id="desc">출처: 누가 올렸나, 근거: 무엇을 보고 말했나, 확인: 다른 곳에서도 그런가. 세 기준이 모여 믿을 만한지 판단으로 이어진다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#334155"/></marker>
+  </defs>
+  <rect width="1280" height="640" fill="#ffffff"/>
+  <g font-family="'맑은 고딕', 'Malgun Gothic', sans-serif" text-anchor="middle" fill="#172335">
+    <text x="640" y="80" font-size="48" font-weight="700">믿을지 판단하는 세 가지</text>
+    <rect x="48" y="120" width="368" height="230" rx="24" fill="#eaf3ff" stroke="#3267a8" stroke-width="4"/>
+    <rect x="456" y="120" width="368" height="230" rx="24" fill="#e9f7ef" stroke="#287a50" stroke-width="4"/>
+    <rect x="864" y="120" width="368" height="230" rx="24" fill="#fff3df" stroke="#a76812" stroke-width="4"/>
+    <text x="232" y="191" font-size="52" font-weight="700" fill="#234f85">출처</text>
+    <text x="232" y="279" font-size="38" font-weight="600">누가 올렸나</text>
+    <text x="640" y="191" font-size="52" font-weight="700" fill="#216340">근거</text>
+    <text x="640" y="260" font-size="38" font-weight="600"><tspan x="640">무엇을 보고</tspan><tspan x="640" dy="49">말했나</tspan></text>
+    <text x="1048" y="191" font-size="52" font-weight="700" fill="#89530a">확인</text>
+    <text x="1048" y="260" font-size="38" font-weight="600"><tspan x="1048">다른 곳에서도</tspan><tspan x="1048" dy="49">그런가</tspan></text>
+    <g fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M232 354 V399 H640 M1048 354 V399 H640 M640 354 V452"/>
+      <path d="M640 427 V466" marker-end="url(#arrow)"/>
+    </g>
+    <circle cx="640" cy="399" r="7" fill="#334155"/>
+    <rect x="292" y="482" width="696" height="114" rx="24" fill="#172f50"/>
+    <text x="640" y="555" font-size="52" font-weight="700" fill="#ffffff">믿을 만한지 판단</text>
+  </g>
+</svg>
