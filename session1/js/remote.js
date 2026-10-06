@@ -160,6 +160,7 @@
     document.addEventListener("pointermove", revealControls);
     document.addEventListener("touchstart", revealControls, { passive: true });
     document.addEventListener("keydown", function (e) { if (e.key === "Tab" && !dialog.open) revealControls(); }, true);
+    document.addEventListener("fullscreenchange", syncFullscreenControls);
   }
 
   function openPanel() {
@@ -213,10 +214,20 @@
     if (changed) window.dispatchEvent(new CustomEvent("lecture-remote-status", { detail: getStatus() }));
   }
   function revealControls() {
-    if (!tvControls) return;
+    if (!tvControls || document.fullscreenElement) return;
     clearTimeout(controlTimer);
     tvControls.classList.add("is-visible");
     controlTimer = setTimeout(function () { tvControls.classList.remove("is-visible"); }, 3500);
+  }
+  function syncFullscreenControls() {
+    clearTimeout(controlTimer);
+    tvControls.classList.remove("is-visible");
+    if (document.fullscreenElement) {
+      // 클릭한 버튼의 포커스가 숨김을 풀거나 F 단축키를 막지 않게 합니다.
+      if (tvControls.contains(document.activeElement)) document.activeElement.blur();
+    } else {
+      revealControls();
+    }
   }
   function fullscreen() {
     try {

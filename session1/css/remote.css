@@ -41,6 +41,8 @@ body.deck.remote-tv { background: var(--night); }
 .remote-tv .viewport { box-shadow: none; }
 .remote-tv-controls { position: fixed; z-index: 1800; right: 18px; bottom: 16px; display: flex; gap: 8px; opacity: 0; visibility: hidden; transition: opacity .2s; }
 .remote-tv-controls.is-visible, .remote-tv-controls:focus-within { opacity: 1; visibility: visible; }
+/* 청중의 전체 화면에서는 마우스 이동과 버튼 포커스에도 가리지 않습니다. */
+:fullscreen .remote-tv-controls { display: none !important; }
 .remote-tv-controls .remote-button { background: rgba(18, 55, 70, .91); color: #fff; border-color: var(--night-line); }
 .remote-alert { position: fixed; z-index: 1800; top: 16px; left: 50%; transform: translateX(-50%); max-width: calc(100vw - 30px); background: var(--warning-paper); color: var(--warning-ink); box-shadow: 0 2px 16px #0003; }
 @media (max-width: 600px) {
