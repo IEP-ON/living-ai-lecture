@@ -4,7 +4,7 @@
 
 - [교안 고르기(첫 화면)](https://iep-on.github.io/living-ai-lecture/)
 - 1부 · 도입과 개론(45장): [교안](https://iep-on.github.io/living-ai-lecture/deck/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/deck/index.html)
-- 2부 · 모듈 사이 이야기(32장): [교안](https://iep-on.github.io/living-ai-lecture/modules/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/modules/index.html) · [기다릴 때 카드](https://iep-on.github.io/living-ai-lecture/modules/기다릴때.html)
+- 2부 · 모듈 사이 이야기(33장): [교안](https://iep-on.github.io/living-ai-lecture/modules/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/modules/index.html) · [기다릴 때 카드](https://iep-on.github.io/living-ai-lecture/modules/기다릴때.html)
 
 ## 프롬프터와 TV 발표
 
