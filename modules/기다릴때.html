@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>기다릴 때 꺼내는 이야기</title>
-  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/base.css?v=20261006-v3">
   <style>
-    body.waits { margin: 0; padding: 28px 20px 64px; background: #eef0ec; color: var(--ink, #1c2420); }
+    body.waits { margin: 0; padding: 28px 20px 64px; background: var(--paper-2); color: var(--ink); }
     .wrap { max-width: 880px; margin: 0 auto; }
     header h1 { margin: 0 0 6px; font-size: 28px; font-weight: 800; letter-spacing: -.03em; }
     header p { margin: 0 0 18px; font-size: 15px; line-height: 1.6; color: var(--muted, #5f6862); }
-    .bar { margin: 0 -20px 18px; padding: 12px 20px 10px; background: rgba(238, 240, 236, .96); border-bottom: 1px solid #dfe3dd; }
+    .bar { margin: 0 -20px 18px; padding: 12px 20px 10px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
     /* 넓은 화면에서만 고르기 막대를 위에 붙입니다(휴대폰에서는 화면을 너무 많이 가림). */
     @media (min-width: 760px) and (min-height: 640px) {
       .bar { position: sticky; top: 0; z-index: 2; }
@@ -30,10 +30,10 @@
     .card h3 { margin: 0 0 6px; font-size: 20px; font-weight: 800; letter-spacing: -.03em; line-height: 1.35; }
     .card h3 .id { display: inline-block; margin-right: 8px; padding: 1px 7px; border-radius: 6px; background: #f1f3ef; color: var(--muted, #5f6862); font: 700 12px/1.6 Consolas, "D2Coding", monospace; vertical-align: 3px; }
     .meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; font-size: 12.5px; font-weight: 700; }
-    .meta span { padding: 3px 9px; border-radius: 999px; background: #eef3ef; color: var(--forest, #1f5a43); }
-    .meta .len { background: #fff2e6; color: #8a4b12; }
-    .meta .kind { background: #f3f0fa; color: #4b3b7a; }
-    .meta .kind.warn { background: #fde9e4; color: #a33a1d; }
+    .meta span { padding: 3px 9px; border-radius: 999px; background: var(--soft); color: var(--forest); }
+    .meta .len { background: var(--warning-paper); color: var(--warning-ink); }
+    .meta .kind { background: var(--canvas); color: var(--ink); }
+    .meta .kind.warn { background: var(--error-paper); color: var(--error-ink); }
     .card p { margin: 0 0 10px; font-size: 17px; line-height: 1.75; }
     .card p .cue { color: #8a4b12; font-weight: 700; }
     .card .extra { margin-top: 10px; padding-top: 10px; border-top: 1px solid #e3e6e1; font-size: 13px; line-height: 1.6; color: var(--muted, #5f6862); }
@@ -50,7 +50,7 @@
   <div class="wrap">
     <header>
       <h1 id="title">기다릴 때 꺼내는 이야기</h1>
-      <p>슬라이드가 아닙니다. AI가 만드는 동안 실습 화면을 띄워 둔 채 꺼냅니다. 카드마다 <b>언제</b> · <b>길이</b> · <b>종류</b>가 있어 남은 시간에 맞는 것을 골라 씁니다. 문구는 js/deck-data.js의 waits에서 고치고, <code>node 대본_다시만들기.cjs</code>를 돌리면 <a href="기다릴때_조각.json">기다릴때_조각.json</a>(데이터)도 함께 새로 만들어집니다. 인쇄하면 지금 골라 둔 카드만 나옵니다.</p>
+      <p>슬라이드가 아닙니다. AI가 만드는 동안 실습 화면을 띄워 둔 채 꺼냅니다. 카드마다 <b>언제</b> · <b>길이</b> · <b>종류</b>가 있어 남은 시간에 맞는 것을 골라 씁니다. 인쇄하면 지금 골라 둔 카드만 나옵니다.</p>
     </header>
     <div class="bar" role="search">
       <div class="row" id="f-part"><b>모듈</b></div>
@@ -60,7 +60,7 @@
     </div>
     <main id="list"></main>
   </div>
-  <script src="js/deck-data.js"></script>
+  <script src="js/deck-data.js?v=20261006-v3"></script>
   <script>
     (function () {
       var D = window.DECK || {}, waits = Array.isArray(D.waits) ? D.waits : [], parts = D.parts || [];

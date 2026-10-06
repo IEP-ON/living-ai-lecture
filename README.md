@@ -1,10 +1,12 @@
-# 질문에서 결과물까지 · 교안
+# 질문에서 결과물까지 · 1회차 교안
 
-이성엽의 에이전트 AI 연수 「질문에서 결과물까지」의 강사용 교안과 발표 화면입니다.
+이성엽의 에이전트 AI 연수 「질문에서 결과물까지」 1회차의 강사용 교안과 발표 화면입니다. 도입과 개론 다음에 이미지와 수업설계를 실습합니다.
+
+슬라이드와 교안은 남색·청록·주황의 v3 디자인을 적용했습니다. 프롬프터·TV 연결과 발표 조작은 그대로입니다.
 
 - [교안 고르기(첫 화면)](https://iep-on.github.io/living-ai-lecture/)
-- 1부 · 도입과 개론(45장): [교안](https://iep-on.github.io/living-ai-lecture/deck/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/deck/index.html)
-- 2부 · 모듈 사이 이야기(33장): [교안](https://iep-on.github.io/living-ai-lecture/modules/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/modules/index.html) · [기다릴 때 카드](https://iep-on.github.io/living-ai-lecture/modules/기다릴때.html)
+- 1회차 A · 도입과 개론(45장): [교안](https://iep-on.github.io/living-ai-lecture/deck/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/deck/index.html)
+- 1회차 B · 이미지와 수업설계(45장 · 기다릴 때 카드 32장): [교안](https://iep-on.github.io/living-ai-lecture/modules/교안.html) · [발표 화면만](https://iep-on.github.io/living-ai-lecture/modules/index.html) · [기다릴 때 카드](https://iep-on.github.io/living-ai-lecture/modules/기다릴때.html)
 
 ## 프롬프터와 TV 발표
 
@@ -12,7 +14,7 @@
 
 - **노트북 한 대 + TV:** 화면을 복제하지 말고 디스플레이를 **확장**으로 설정합니다. 프롬프터의 **TV 연결 → 슬라이드 창 열기**를 눌러 그 창만 TV로 옮기고 전체 화면으로 엽니다. 교안과 프롬프터는 노트북에 둡니다. 같은 기기의 창 연결은 인터넷 없이도 작동하지만 페이지와 자료는 미리 불러오거나 로컬 사본을 열어야 합니다.
 - **태블릿 + Windows 데스크톱/노트북 + TV:** 태블릿에서 **프롬프터 → TV 연결 → 연결 코드 만들기**를 누릅니다. **코드 준비 완료**가 나오면 Windows 컴퓨터에서 같은 강의의 **TV 연결 화면**을 열어 10자리 코드를 입력하거나, **TV 주소 복사**로 얻은 주소를 엽니다. 컴퓨터와 TV를 HDMI 등으로 연결하고 TV에서 **전체 화면**을 누릅니다. 컴퓨터 모니터와 TV를 따로 쓰려면 Windows에서 **Win+P → 확장**을 선택한 뒤 슬라이드 창을 TV로 옮깁니다. 태블릿에는 강사 화면을 열어 둔 채 이전·다음으로 넘깁니다. TV 쪽에서는 장을 바꾸지 못합니다.
-- 1부와 2부는 각각 연결합니다. 강사 화면을 새로 열거나 연결을 종료했다면 새 코드로 다시 연결합니다. TV 화면만 새로 고친 경우 주소의 코드로 재연결합니다.
+- A와 B는 각각 연결합니다. 강사 화면을 새로 열거나 연결을 종료했다면 새 코드로 다시 연결합니다. TV 화면만 새로 고친 경우 주소의 코드로 재연결합니다.
 
 두 기기는 HTTPS 연결 서버를 통해 현재 장을 맞춥니다. 같은 와이파이를 사용할 필요는 없으며 태블릿의 모바일 인터넷과 Windows 컴퓨터의 유선 인터넷처럼 서로 다른 망에서도 각각 서버에 접속할 수 있으면 연결됩니다. 두 기기 모두 인터넷과 최신 브라우저가 필요합니다. 학교의 접속 제한이나 서버 장애가 있으면 위의 **노트북 한 대 + TV 확장 화면**을 사용할 수 있습니다.
 

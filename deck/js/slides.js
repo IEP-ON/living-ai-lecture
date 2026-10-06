@@ -1,5 +1,5 @@
 /*
-  발표형 강의 슬라이드 엔진 v2 (1280 × 720)
+  발표형 강의 슬라이드 엔진 v3 작업본 (1280 × 720)
   deck-data.js의 DECK.slides를 그립니다. 교안(guide.js)과 모아보기도 같은 buildSlide를 씁니다.
   화면 유형(layout)과 칸은 강의슬라이드_템플릿/읽는법.md의 표를 따릅니다.
   이 파일과 css · 도구는 템플릿과 강의 폴더가 같은 내용입니다. 고치면 템플릿에도 똑같이 반영합니다.
@@ -93,19 +93,25 @@
   }
   var NO_CHROME_KICK = { cover: 1, section: 1, end: 1 };
   function chrome(sec, slide, index) {
-    if (slide.kicker && !NO_CHROME_KICK[slide.layout]) sec.appendChild(R("p", "kick", slide.kicker));
+    if (NO_CHROME_KICK[slide.layout]) return;
+    var heading = el("header", "slide-header", [R("b", "header-brand", "LivingAI")]);
+    if (slide.kicker) heading.appendChild(R("p", "kick", slide.kicker));
+    heading.appendChild(R("span", "edition", "질문에서 결과물까지"));
+    sec.appendChild(heading);
     var parts = (window.DECK && DECK.parts) || [];
+    var group = slide.group || "";
+    if (!group && window.DECK) {
+      for (var gi = index; gi >= 0; gi--) { if (DECK.slides[gi].group) { group = DECK.slides[gi].group; break; } }
+    }
     if (slide.part && parts.length) {
       var bar = el("div", "prog");
       parts.forEach(function (_, i) {
-        bar.appendChild(el("span", "seg" + (i + 1 === slide.part ? " on" : i + 1 < slide.part ? " done" : "")));
+        bar.appendChild(el("span", "seg" + (i + 1 === slide.part ? " on" : i + 1 < slide.part ? " done" : ""), [el("i"), el("b")]));
       });
-      bar.appendChild(R("em", "prog-label", pad(slide.part) + "  " + (parts[slide.part - 1] || "")));
+      group = pad(slide.part) + "  " + (parts[slide.part - 1] || "");
       sec.appendChild(bar);
     }
-    var num = el("p", "pagenum");
-    num.textContent = pad(index + 1);
-    sec.appendChild(num);
+    sec.appendChild(el("footer", "slide-footer", [R("b", "", "LivingAI"), R("span", "prog-label", group), R("span", "pagenum", pad(index + 1))]));
   }
   function title(sec, d, cls) { if (d.title) sec.appendChild(R("h1", "title " + (cls || ""), d.title)); }
   function subtitle(sec, d) { if (d.subtitle) { sec.classList.add("has-subtitle"); sec.appendChild(R("p", "subtitle", d.subtitle)); } }
@@ -124,7 +130,9 @@
 
   /* 표지 */
   L.cover = function (s, d) {
+    s.classList.add("is-dark");
     logo(s);
+    s.appendChild(R("p", "deck-brand", "LivingAI"));
     if (d.kicker) s.appendChild(R("p", "cv-kick", d.kicker));
     s.appendChild(el("span", "cv-bar"));
     s.appendChild(R("h1", "cv-title", d.title));
@@ -137,13 +145,16 @@
   L.profile = function (s, d) {
     s.appendChild(el("div", "pf-left", [R("h1", "pf-name", d.name), d.role ? R("p", "pf-role", d.role) : null, d.line ? R("p", "pf-line", d.line) : null]));
     var grid = el("div", "pf-grid");
-    list(d.items).forEach(function (it) { grid.appendChild(el("div", "pf-card", [R("strong", "", it.title), it.text ? R("p", "", it.text) : null])); });
+    list(d.items).forEach(function (it, i) { grid.appendChild(el("div", "pf-card", [R("b", "pf-index", pad(i + 1)), R("strong", "", it.title), it.text ? R("p", "", it.text) : null])); });
     s.appendChild(grid);
     if (d.highlight) s.appendChild(el("div", "pf-hl", [R("strong", "", d.highlight.title), R("p", "", d.highlight.text)]));
   };
 
   /* 주제 갈피(어두운 화면) + 선택: 연표 */
-  L.section = function (s, d) {
+  L.section = function (s, d, index) {
+    s.classList.add("is-dark");
+    var number = d.part || list(window.DECK && DECK.slides).slice(0, index + 1).filter(function (sl) { return sl.layout === "section"; }).length;
+    s.appendChild(R("span", "sec-number", pad(number)));
     if (d.kicker) s.appendChild(R("p", "sec-kick", d.kicker));
     s.appendChild(R("h1", "sec-title", d.title));
     if (d.lead) s.appendChild(R("p", "sec-lead", d.lead));
@@ -167,7 +178,7 @@
     s.appendChild(box);
   };
 
-  /* 인용(명조) + 선택: 앞말(lead) · 오른쪽 풀이(after) */
+  /* 인용(가는 산세리프) + 선택: 앞말(lead) · 오른쪽 풀이(after) */
   L.quote = function (s, d) {
     var wrap = el("div", "qt" + (d.after ? " with-after" : ""));
     if (d.lead) wrap.appendChild(R("p", "qt-lead", d.lead));
@@ -259,16 +270,17 @@
 
   /* 따옴표 한 마디 → 인정 → 돌아서기 */
   L.turn = function (s, d) {
+    s.appendChild(R("span", "turn-mark", "“"));
     s.appendChild(R("blockquote", "turn-q", d.quote));
     if (d.before) s.appendChild(R("p", "turn-before", d.before));
-    if (d.after) s.appendChild(R("p", "turn-after", d.after));
+    if (d.after) s.appendChild(R("p", "turn-after" + (d.after.indexOf("→") >= 0 ? " with-arrow" : ""), d.after));
   };
 
   /* 번호 단계(카드) + 꼬리표 */
   L.steps = function (s, d) {
     title(s, d);
     var ol = el("ol", "ov-steps");
-    list(d.steps).forEach(function (t, i) { ol.appendChild(el("li", "", [R("b", "", String(i + 1)), R("span", "", t)])); });
+    list(d.steps).forEach(function (t, i) { ol.appendChild(el("li", "", [R("b", "", pad(i + 1)), R("span", "", t)])); });
     s.appendChild(ol);
     if (d.tags) {
       var mods = el("div", "ov-mods");
@@ -296,7 +308,7 @@
     var row = el("div", "terms");
     list(d.terms).forEach(function (t, i) {
       if (i) row.appendChild(R("span", "approx", d.sign || "≈"));
-      row.appendChild(R("span", "term", t));
+      row.appendChild(el("span", "term", [R("small", "term-index", pad(i + 1)), R("span", "", t)]));
     });
     s.appendChild(row);
     if (d.def) s.appendChild(R("p", "def", d.def));
@@ -342,18 +354,18 @@
       pos[li].forEach(function (a, i) {
         pos[li + 1].forEach(function (b, j) {
           var w = Math.abs(Math.sin((li * 31 + i * 7 + j * 13) * 12.9898) * 43758.5453) % 1;
-          var stroke = "#c7cdc8", width = 1.4, op = 0.9;
+          var stroke = "#63848A", width = 1, op = 0.7;
           if (trained) {
-            if (w > 0.74) { stroke = "var(--signal)"; width = 5; }
-            else if (w > 0.48) { stroke = "var(--forest)"; width = 2.6; }
-            else { stroke = "#d6dbd6"; width = 0.9; op = 0.7; }
+            if (w > 0.74) { stroke = "var(--signal)"; width = 2; op = 1; }
+            else if (w > 0.48) { stroke = "var(--accent)"; width = 1; }
+            else { stroke = "#CCD9D5"; width = 1; op = 0.7; }
           }
           edges.push(svg("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: stroke, "stroke-width": width, opacity: op, "stroke-linecap": "round" }));
         });
       });
     }
     pos.forEach(function (layer) {
-      layer.forEach(function (p) { nodes.push(svg("circle", { cx: p[0], cy: p[1], r: 13, fill: "#fff", stroke: "var(--ink)", "stroke-width": 2 })); });
+      layer.forEach(function (p) { nodes.push(svg("circle", { cx: p[0], cy: p[1], r: 13, fill: "#fff", stroke: "var(--accent)", "stroke-width": 1.5 })); });
     });
     return svg("svg", { viewBox: "0 0 460 300", class: "net-svg" }, edges.concat(nodes));
   }
@@ -383,7 +395,7 @@
 
   /* 빈칸 채우기 놀이 */
   L.blank = function (s, d) {
-    s.appendChild(el("p", "blank", [R("span", "", d.text + " "), el("span", "blank-gap", [el("i", "caret")])]));
+    s.appendChild(el("p", "blank", [R("span", "blank-text", d.text + " "), el("span", "blank-gap", [el("i", "caret")]), el("span", "pr-send")]));
   };
 
   /* 확률 막대 + 옆 카드 */
@@ -417,8 +429,18 @@
     title(s, d);
     var card = el("div", "nv");
     if (d.dest) card.appendChild(el("div", "nv-dest", [el("span", "nv-pin"), R("span", "", d.dest)]));
-    var ol = el("ol", "nv-route");
-    list(d.route).forEach(function (w, i) { ol.appendChild(R("li", i === list(d.route).length - 1 ? "end" : "", w)); });
+    var route = list(d.route), ol = el("ol", "nv-route"), path = "", pts = [];
+    route.forEach(function (w, i) {
+      var x = 46 + i * 558 / Math.max(1, route.length - 1), y = i % 2 ? 138 : 70;
+      pts.push([x, y]);
+      path += i ? " C " + (pts[i - 1][0] + 50) + " " + pts[i - 1][1] + ", " + (x - 50) + " " + y + ", " + x + " " + y : "M" + x + " " + y;
+      var li = R("li", i === route.length - 1 ? "end" : "", w);
+      li.style.left = (x / 650 * 100) + "%"; li.style.top = (y + 30) + "px";
+      ol.appendChild(li);
+    });
+    var kids = [svg("path", { d: path, class: "route-bed" }), svg("path", { d: path, class: "route-line" })];
+    pts.forEach(function (p, i) { kids.push(svg("circle", { cx: p[0], cy: p[1], r: 10, class: "route-stop" + (i === pts.length - 1 ? " last" : "") })); });
+    ol.insertBefore(svg("svg", { viewBox: "0 0 650 220", class: "route-svg", "aria-hidden": "true" }, kids), ol.firstChild);
     card.appendChild(ol);
     s.appendChild(card);
     if (d.quote) s.appendChild(el("div", "nv-quote", [R("p", "", d.quote), d.by ? R("span", "", d.by) : null]));
@@ -458,12 +480,13 @@
     widths.forEach(function (w) { centers.push(x + w / 2); x += w + gap; });
     var kids = [];
     var fx = centers[d.from];
+    var strongest = list(d.links).reduce(function (max, lk) { return lk.w > max ? lk.w : max; }, 0);
     list(d.links).slice().sort(function (a, b) { return a.w - b.w; }).forEach(function (lk) {
       var tx = centers[lk.to], h = 54 + Math.abs(fx - tx) * 0.2;
-      var color = lk.w >= 0.9 ? "var(--signal)" : lk.w >= 0.5 ? "var(--forest)" : "#9aa49d";
+      var color = lk.w === strongest ? "var(--signal)" : "var(--accent)";
       kids.push(svg("path", {
         d: "M" + fx + " " + (baseY - 52) + " Q " + (fx + tx) / 2 + " " + (baseY - 52 - h) + " " + tx + " " + (baseY - 52),
-        fill: "none", stroke: color, "stroke-width": 2 + 9 * lk.w, opacity: 0.35 + 0.65 * lk.w, "stroke-linecap": "round"
+        fill: "none", stroke: color, "stroke-width": 1 + 5 * lk.w, opacity: 0.35 + 0.65 * lk.w, "stroke-linecap": "round"
       }));
     });
     words.forEach(function (w, i) {
@@ -492,7 +515,7 @@
   /* 시험지(답안 + 빨간 표시) + 오른쪽 풀이 */
   L.paper = function (s, d) {
     title(s, d);
-    s.appendChild(el("div", "ex-paper", [
+    s.appendChild(el("div", "ex-paper" + (/^[○◯〇✓]/.test(d.score || "") ? " correct" : ""), [
       R("p", "ex-q", d.question),
       el("div", "ex-ans", [R("span", "", d.answer)]),
       el("span", "ex-mark"),
@@ -555,6 +578,7 @@
     title(s, d);
     var apps = el("div", "md-apps", [R("p", "md-head", d.appsHead || "앱 · 서비스")]);
     var chips = el("div", "md-chips");
+    apps.appendChild(el("div", "md-orbit", [R("span", "", "모델")]));
     list(d.apps).forEach(function (a) { chips.appendChild(R("span", a === d.highlight ? "me" : "", a)); });
     apps.appendChild(chips);
     s.appendChild(apps);
@@ -566,7 +590,7 @@
     if (d.effort) {
       var eff = el("div", "md-effort", [R("p", "md-head", d.effortHead || "추론 설정")]);
       var track = el("div", "md-track");
-      d.effort.forEach(function (e) { track.appendChild(R("span", "", e)); });
+      d.effort.forEach(function (e, i) { track.appendChild(R("span", i === (Number.isInteger(d.effortIndex) ? d.effortIndex : 1) ? "current" : "", e)); });
       eff.appendChild(track);
       if (d.effortNote) eff.appendChild(R("p", "md-note", d.effortNote));
       s.appendChild(eff);
@@ -601,7 +625,7 @@
     if (d.from && d.to) {
       s.appendChild(el("div", "ag-meal", [
         el("div", "ag-dish", [R("b", "", d.from.title), R("p", "", d.from.text)]),
-        R("span", "ag-arrow", "→"),
+        svg("svg", { viewBox: "0 0 180 140", class: "ag-arrow", "aria-hidden": "true" }, [svg("path", { d: "M5 105 C50 105 52 30 168 30 M155 18 L170 30 L155 42", fill: "none", stroke: "var(--accent)", "stroke-width": 2 })]),
         el("div", "ag-dish main", [R("b", "", d.to.title), R("p", "", d.to.text)])
       ]));
     }
@@ -628,7 +652,8 @@
     var fig = el("div", "lp");
     fig.appendChild(svg("svg", { viewBox: "0 0 600 470", class: "lp-svg" }, kids));
     list(d.steps).slice(0, 4).forEach(function (st, i) {
-      var node = el("div", "lp-node n" + (i + 1), [R("b", "", st.n || String(i + 1)), R("p", "lp-head", st.head), st.text ? R("p", "lp-text", st.text) : null]);
+      var number = st.n && !/^0?[1-4]$/.test(String(st.n)) ? st.n : pad(Number(st.n) || i + 1);
+      var node = el("div", "lp-node n" + (i + 1), [R("b", "", number), R("p", "lp-head", st.head), st.text ? R("p", "lp-text", st.text) : null]);
       node.style.left = spots[i][0] + "px";
       node.style.top = spots[i][1] + "px";
       fig.appendChild(node);
@@ -640,7 +665,7 @@
     s.appendChild(side);
   };
 
-  /* 파일 목록(어두운 판) + 고친 파일에서 돌아가는 화살표 */
+  /* 겹친 파일 종이 + 고친 파일에서 돌아가는 화살표 */
   L.files = function (s, d) {
     title(s, d);
     var files = list(d.files), mid = nextId("fl");
@@ -650,7 +675,7 @@
       panel.appendChild(el("div", "fl-row file" + (i === d.edited ? " edited" : ""), [icon("file", "fl-ico"), R("span", "", f), i === d.edited ? R("em", "", d.editedTag || "고침") : null]));
     });
     if (typeof d.edited === "number") {
-      var rowH = 64, top = rowH, kids = [svg("defs", {}, [arrowMarker(mid, "var(--signal)")])];
+      var rowH = 72, top = 48, kids = [svg("defs", {}, [arrowMarker(mid, "var(--signal)")])];
       var ey = top + d.edited * rowH + rowH / 2, X = 560;
       files.forEach(function (_, i) {
         if (i === d.edited) return;
@@ -681,15 +706,21 @@
     foot(s, d);
   };
 
-  /* 아래로 이어지는 세 줄(마지막 줄이 밝게) */
+  /* 작은 원에서 큰 원으로 퍼지는 세 줄(마지막 줄이 밝게) */
   L.cascade = function (s, d) {
+    var rings = [svg("circle", { cx: 260, cy: 250, r: 224, class: "hr-ring outer" }), svg("circle", { cx: 260, cy: 250, r: 160, class: "hr-ring middle" }), svg("circle", { cx: 260, cy: 250, r: 90, class: "hr-ring inner" })];
+    [[324, 186], [420, 250], [418, 408]].forEach(function (p, i) {
+      rings.push(svg("circle", { cx: p[0], cy: p[1], r: 18, class: "hr-badge" + (i === 2 ? " last" : "") }));
+      rings.push(svgText(p[0], p[1] + 5, pad(i + 1), { "text-anchor": "middle", class: "hr-index" }));
+    });
+    s.appendChild(svg("svg", { viewBox: "0 0 540 500", class: "hr-rings", "aria-hidden": "true" }, rings));
     var ol = el("ol", "hr");
-    list(d.steps).forEach(function (t) { ol.appendChild(R("li", "", t)); });
+    list(d.steps).forEach(function (t, i) { ol.appendChild(el("li", "", [R("small", "", pad(i + 1)), R("span", "", t)])); });
     s.appendChild(ol);
     if (d.by) s.appendChild(R("p", "hr-by", d.by));
   };
 
-  /* 절정: 큰 명조 한 줄 + 입력창 한 줄 */
+  /* 절정: 가는 큰 글자 한 줄 + 입력창 한 줄 */
   L.climax = function (s, d) {
     s.appendChild(R("p", "gn-verse", d.verse));
     if (d.ref) s.appendChild(R("p", "gn-ref", d.ref));
@@ -701,7 +732,7 @@
   L.gallery = function (s, d) {
     title(s, d);
     if (d.sub) s.appendChild(R("p", "apps-sub", d.sub));
-    var grid = el("div", "apps");
+    var grid = el("div", "apps" + (list(d.items).length === 3 ? " film" : ""));
     list(d.items).forEach(function (a) {
       var pic = img(a.image, (a.name || "") + " 화면");
       if (a.focus) pic.style.objectPosition = a.focus;
@@ -764,11 +795,12 @@
   /* 마무리(steps: 다음 행동 세 칸 · lines: 첫 줄 강조 + 나머지) */
   L.end = function (s, d) {
     logo(s);
+    s.appendChild(R("p", "deck-brand", "LivingAI"));
     if (d.kicker) s.appendChild(R("p", "end-kick", d.kicker));
     s.appendChild(R("h1", "end-title", d.title));
     if (d.steps) {
       var ol = el("ol", "end-steps");
-      d.steps.forEach(function (t, i) { ol.appendChild(el("li", "", [R("b", "", String(i + 1)), R("span", "", t)])); });
+      d.steps.forEach(function (t, i) { ol.appendChild(el("li", "", [R("b", "", pad(i + 1)), R("span", "", t)])); });
       s.appendChild(ol);
     } else if (d.lines) {
       if (d.lines[0]) s.appendChild(R("p", "end-lead", d.lines[0]));
@@ -788,7 +820,7 @@
     sec.setAttribute("aria-label", (index + 1) + ". " + slideLabel(slide));
     sec.setAttribute("aria-hidden", "true");
     var make = L[slide.layout];
-    if (make) make(sec, slide);
+    if (make) make(sec, slide, index);
     else sec.appendChild(R("p", "unknown", "모르는 layout입니다: " + slide.layout + " (읽는법.md의 화면 유형 표를 보세요)"));
     if (slide.layout !== "cover" && slide.layout !== "end") chrome(sec, slide, index);
     return sec;

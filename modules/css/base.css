@@ -13,26 +13,37 @@
   font-display: swap;
 }
 :root {
-  --ink: #141816;
-  --muted: #67706a;
-  --line: #dfe3dd;
-  --paper: #f7f6f2;
-  --paper-2: #efeee8;
+  --ink: #123746;
+  --muted: #557077;
+  --line: #CCD9D5;
+  --paper: #F7F4ED;
+  --paper-2: #EAEAE5;
   --card: #ffffff;
-  --forest: #1c4a3c;
-  --accent: #13805a;
-  --signal: #e2482f;
-  --night: #0e1311;
-  --night-2: #161d1a;
-  --night-line: #2a332e;
-  --night-ink: #eef2ee;
-  --night-muted: #95a19a;
-  --mint: #5ad3a2;
-  --serif: "RIDIBatang", "Noto Serif KR", serif;
+  --forest: #123746;
+  --accent: #237477;
+  --signal: #E99B59;
+  --wrong: #C2553A;
+  --canvas: #E1EBEB;
+  --soft: #DCEAE5;
+  --apricot: #F1B58D;
+  --night: #0C2F3D;
+  --night-2: #123746;
+  --night-line: #2C5263;
+  --night-ink: #F7F4ED;
+  --night-muted: #9DB6BC;
+  --mint: #52A7C1;
+  --sans: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --serif: var(--sans);
+  --presenter: #152b3a;
+  --focus: #B9DDE3;
+  --warning-ink: #784918;
+  --warning-paper: #fff0dc;
+  --error-ink: #a63a20;
+  --error-paper: #fdece7;
   /* 템플릿 교안 화면이 쓰는 이름 */
   --green: var(--forest);
-  --char: #2b332e;
-  --red: var(--signal);
+  --char: var(--ink);
+  --red: var(--wrong);
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -42,7 +53,7 @@ body {
   min-height: 100%;
   background: var(--paper-2);
   color: var(--ink);
-  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-family: var(--sans);
   font-weight: 450;
   letter-spacing: -0.02em;
   word-break: keep-all;
