@@ -91,13 +91,14 @@
     if (own && !D.logo) return;
     sec.appendChild(img(own ? D.logo : "brand/dgtp-seic.png", D.logoAlt || (own ? "로고" : "DGTP · SEIC"), "logo"));
   }
-  var NO_CHROME_KICK = { cover: 1, section: 1, end: 1 };
   function chrome(sec, slide, index) {
-    if (NO_CHROME_KICK[slide.layout]) return;
-    var heading = el("header", "slide-header", [R("b", "header-brand", "LivingAI")]);
-    if (slide.kicker) heading.appendChild(R("p", "kick", slide.kicker));
-    heading.appendChild(R("span", "edition", "질문에서 결과물까지"));
-    sec.appendChild(heading);
+    if (slide.layout === "cover" || slide.layout === "end") return;
+    if (slide.layout !== "section") {
+      var heading = el("header", "slide-header", [R("b", "header-brand", "LivingAI")]);
+      if (slide.kicker) heading.appendChild(R("p", "kick", slide.kicker));
+      heading.appendChild(R("span", "edition", "질문에서 결과물까지"));
+      sec.appendChild(heading);
+    }
     var parts = (window.DECK && DECK.parts) || [];
     var group = slide.group || "";
     if (!group && window.DECK) {
@@ -115,6 +116,16 @@
   }
   function title(sec, d, cls) { if (d.title) sec.appendChild(R("h1", "title " + (cls || ""), d.title)); }
   function subtitle(sec, d) { if (d.subtitle) { sec.classList.add("has-subtitle"); sec.appendChild(R("p", "subtitle", d.subtitle)); } }
+  function sendMark() {
+    return el("span", "pr-send", [svg("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, [
+      svg("path", { d: "M12 19V5 M5 12L12 5L19 12", fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" })
+    ])]);
+  }
+  function flowArrow(cls) {
+    return svg("svg", { viewBox: "0 0 32 32", class: cls, "aria-hidden": "true" }, [
+      svg("path", { d: "M4 16H28 M19 7L28 16L19 25", fill: "none", stroke: "currentColor", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round" })
+    ]);
+  }
   function foot(sec, d) {
     if (!d.foot) return;
     sec.classList.add("has-foot");
@@ -153,11 +164,11 @@
   /* 주제 갈피(어두운 화면) + 선택: 연표 */
   L.section = function (s, d, index) {
     s.classList.add("is-dark");
+    if (!d.timeline) s.classList.add("no-timeline");
     var number = d.part || list(window.DECK && DECK.slides).slice(0, index + 1).filter(function (sl) { return sl.layout === "section"; }).length;
     s.appendChild(R("span", "sec-number", pad(number)));
     if (d.kicker) s.appendChild(R("p", "sec-kick", d.kicker));
-    s.appendChild(R("h1", "sec-title", d.title));
-    if (d.lead) s.appendChild(R("p", "sec-lead", d.lead));
+    s.appendChild(el("div", "sec-body", [R("h1", "sec-title", d.title), d.lead ? R("p", "sec-lead", d.lead) : null]));
     if (d.timeline) {
       var tl = el("ol", "tl");
       d.timeline.forEach(function (t) { tl.appendChild(el("li", t.now ? "now" : "", [el("i"), R("b", "", t.year), R("span", "", t.text)])); });
@@ -185,12 +196,11 @@
     wrap.appendChild(R("span", "qmark", "“"));
     wrap.appendChild(R("blockquote", "qt-text", d.text));
     if (d.by) wrap.appendChild(R("p", "qt-by", d.by));
-    s.appendChild(wrap);
     if (d.after) {
       var ul = el("ul", "qt-after");
       d.after.forEach(function (t) { ul.appendChild(R("li", "", t)); });
-      s.appendChild(ul);
-    }
+      s.appendChild(el("div", "quote-pair", [wrap, ul]));
+    } else s.appendChild(wrap);
   };
 
   /* 핵심과 설명(목록) */
@@ -232,7 +242,7 @@
     if (d.lead) s.appendChild(R("p", "pr-lead", d.lead));
     s.appendChild(el("div", "pr-box", [
       R("p", "pr-text", d.prompt),
-      el("div", "pr-bar", [R("span", "pr-plus", "+"), d.model ? R("span", "pr-model", d.model) : null, el("span", "pr-send")])
+      el("div", "pr-bar", [R("span", "pr-plus", "+"), d.model ? R("span", "pr-model", d.model) : null, sendMark()])
     ]));
     if (d.caption) s.appendChild(R("p", "pr-cap", d.caption));
   };
@@ -329,7 +339,7 @@
     title(s, d);
     var row = el("div", "rl");
     list(d.columns).forEach(function (c, i) {
-      if (i) row.appendChild(R("span", "rl-arrow", "→"));
+      if (i) row.appendChild(flowArrow("rl-arrow"));
       var col = el("div", "rl-col " + (c.tone || "ok"), [R("p", "rl-head", c.head)]);
       var ul = el("ul");
       list(c.items).forEach(function (t) { ul.appendChild(el("li", "", [R("b", "", c.mark || "✓"), R("span", "", t)])); });
@@ -354,11 +364,11 @@
       pos[li].forEach(function (a, i) {
         pos[li + 1].forEach(function (b, j) {
           var w = Math.abs(Math.sin((li * 31 + i * 7 + j * 13) * 12.9898) * 43758.5453) % 1;
-          var stroke = "#63848A", width = 1, op = 0.7;
+          var stroke = "#A9BABD", width = 1.4, op = 0.9;
           if (trained) {
-            if (w > 0.74) { stroke = "var(--signal)"; width = 2; op = 1; }
-            else if (w > 0.48) { stroke = "var(--accent)"; width = 1; }
-            else { stroke = "#CCD9D5"; width = 1; op = 0.7; }
+            if (w > 0.74) { stroke = "var(--signal)"; width = 5; op = 1; }
+            else if (w > 0.48) { stroke = "var(--accent)"; width = 2.6; }
+            else { stroke = "#CCD9D5"; width = 0.9; op = 0.7; }
           }
           edges.push(svg("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: stroke, "stroke-width": width, opacity: op, "stroke-linecap": "round" }));
         });
@@ -375,7 +385,7 @@
     var row = el("div", "net");
     states.forEach(function (label, i) {
       row.appendChild(el("figure", "net-fig" + (i ? " after" : ""), [netSvg(i === 1), R("figcaption", "", label)]));
-      if (!i) row.appendChild(R("span", "net-arrow", "→"));
+      if (!i) row.appendChild(flowArrow("net-arrow"));
     });
     s.appendChild(row);
     if (d.message) s.appendChild(R("p", "net-msg", d.message));
@@ -395,7 +405,7 @@
 
   /* 빈칸 채우기 놀이 */
   L.blank = function (s, d) {
-    s.appendChild(el("p", "blank", [R("span", "blank-text", d.text + " "), el("span", "blank-gap", [el("i", "caret")]), el("span", "pr-send")]));
+    s.appendChild(el("p", "blank", [R("span", "blank-text", d.text + " "), el("span", "blank-gap", [el("i", "caret")]), sendMark()]));
   };
 
   /* 확률 막대 + 옆 카드 */
@@ -486,7 +496,7 @@
       var color = lk.w === strongest ? "var(--signal)" : "var(--accent)";
       kids.push(svg("path", {
         d: "M" + fx + " " + (baseY - 52) + " Q " + (fx + tx) / 2 + " " + (baseY - 52 - h) + " " + tx + " " + (baseY - 52),
-        fill: "none", stroke: color, "stroke-width": 1 + 5 * lk.w, opacity: 0.35 + 0.65 * lk.w, "stroke-linecap": "round"
+        fill: "none", stroke: color, "stroke-width": 2 + 9 * lk.w, opacity: 0.35 + 0.65 * lk.w, "stroke-linecap": "round"
       }));
     });
     words.forEach(function (w, i) {
@@ -600,7 +610,7 @@
   /* 같은 부탁, 두 결과 */
   L.askcompare = function (s, d) {
     title(s, d);
-    if (d.ask) s.appendChild(R("p", "tt-ask", d.ask));
+    if (d.ask) s.appendChild(el("div", "tt-ask", [R("span", "", d.ask), sendMark()]));
     var row = el("div", "tt");
     [d.left, d.right].forEach(function (c, i) {
       if (!c) return;
@@ -625,7 +635,7 @@
     if (d.from && d.to) {
       s.appendChild(el("div", "ag-meal", [
         el("div", "ag-dish", [R("b", "", d.from.title), R("p", "", d.from.text)]),
-        svg("svg", { viewBox: "0 0 180 140", class: "ag-arrow", "aria-hidden": "true" }, [svg("path", { d: "M5 105 C50 105 52 30 168 30 M155 18 L170 30 L155 42", fill: "none", stroke: "var(--accent)", "stroke-width": 2 })]),
+        svg("svg", { viewBox: "0 0 180 140", class: "ag-arrow", "aria-hidden": "true" }, [svg("path", { d: "M10 70H168 M155 57L168 70L155 83", fill: "none", stroke: "var(--accent)", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round" })]),
         el("div", "ag-dish main", [R("b", "", d.to.title), R("p", "", d.to.text)])
       ]));
     }
@@ -636,9 +646,14 @@
   L.cycle = function (s, d) {
     title(s, d);
     var cx = 300, cy = 236, r = 172, mid = nextId("cyc");
-    var spots = [[300, 66], [474, 236], [300, 406], [126, 236]];
-    var arcs = [[-54, -22], [22, 54], [126, 158], [202, 234]];
-    var kids = [svg("defs", {}, [arrowMarker(mid, "var(--forest)")])];
+    var angles = [-90, 0, 90, 180];
+    var spots = angles.map(function (a) { var t = a * Math.PI / 180; return [cx + r * Math.cos(t), cy + r * Math.sin(t)]; });
+    // 각 노드의 반지름(73)과 같은 여백(12)을 기준으로 고리 끝을 맞춥니다.
+    var gapAngle = 2 * Math.asin((73 + 12) / (2 * r)) * 180 / Math.PI;
+    var arcs = angles.map(function (a) { return [a + gapAngle, a + 90 - gapAngle]; });
+    var marker = arrowMarker(mid, "var(--forest)");
+    marker.setAttribute("refX", "10"); marker.setAttribute("markerWidth", "5"); marker.setAttribute("markerHeight", "5");
+    var kids = [svg("defs", {}, [marker])];
     kids.push(svg("circle", { cx: cx, cy: cy, r: r, fill: "none", stroke: "#e4e8e3", "stroke-width": 2, "stroke-dasharray": "2 8" }));
     arcs.forEach(function (a) {
       var a1 = a[0] * Math.PI / 180, a2 = a[1] * Math.PI / 180;
@@ -648,7 +663,7 @@
       }));
     });
     kids.push(svg("circle", { cx: cx, cy: cy, r: 64, fill: "var(--forest)" }));
-    kids.push(svgText(cx, cy + 11, d.center || "목표", { "text-anchor": "middle", class: "lp-center" }));
+    kids.push(svgText(cx, cy, d.center || "목표", { "text-anchor": "middle", "dominant-baseline": "central", class: "lp-center" }));
     var fig = el("div", "lp");
     fig.appendChild(svg("svg", { viewBox: "0 0 600 470", class: "lp-svg" }, kids));
     list(d.steps).slice(0, 4).forEach(function (st, i) {
@@ -708,10 +723,14 @@
 
   /* 작은 원에서 큰 원으로 퍼지는 세 줄(마지막 줄이 밝게) */
   L.cascade = function (s, d) {
-    var rings = [svg("circle", { cx: 260, cy: 250, r: 224, class: "hr-ring outer" }), svg("circle", { cx: 260, cy: 250, r: 160, class: "hr-ring middle" }), svg("circle", { cx: 260, cy: 250, r: 90, class: "hr-ring inner" })];
+    var mid = nextId("hr");
+    var rings = [svg("defs", {}, [arrowMarker(mid, "var(--signal)")]), svg("circle", { cx: 260, cy: 250, r: 224, class: "hr-ring outer" }), svg("circle", { cx: 260, cy: 250, r: 160, class: "hr-ring middle" }), svg("circle", { cx: 260, cy: 250, r: 90, class: "hr-ring inner" })];
+    ["M344 200 Q385 206 404 232", "M424 272 Q448 328 427 382"].forEach(function (d) {
+      rings.push(svg("path", { d: d, fill: "none", stroke: "var(--signal)", "stroke-width": 2.5, "marker-end": "url(#" + mid + ")" }));
+    });
     [[324, 186], [420, 250], [418, 408]].forEach(function (p, i) {
       rings.push(svg("circle", { cx: p[0], cy: p[1], r: 18, class: "hr-badge" + (i === 2 ? " last" : "") }));
-      rings.push(svgText(p[0], p[1] + 5, pad(i + 1), { "text-anchor": "middle", class: "hr-index" }));
+      rings.push(svgText(p[0], p[1], pad(i + 1), { "text-anchor": "middle", "dominant-baseline": "central", class: "hr-index" }));
     });
     s.appendChild(svg("svg", { viewBox: "0 0 540 500", class: "hr-rings", "aria-hidden": "true" }, rings));
     var ol = el("ol", "hr");
@@ -724,7 +743,7 @@
   L.climax = function (s, d) {
     s.appendChild(R("p", "gn-verse", d.verse));
     if (d.ref) s.appendChild(R("p", "gn-ref", d.ref));
-    if (d.prompt) s.appendChild(el("div", "gn-box", [R("span", "", d.prompt), el("i", "caret"), el("span", "pr-send")]));
+    if (d.prompt) s.appendChild(el("div", "gn-box", [R("span", "", d.prompt), el("i", "caret"), sendMark()]));
     if (d.line) s.appendChild(R("p", "gn-line", d.line));
   };
 
