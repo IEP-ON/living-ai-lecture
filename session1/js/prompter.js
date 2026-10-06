@@ -15,6 +15,8 @@
   let fontSize = clamp(prefs.fontSize, 24, 64, 40);
   let speed = clamp(prefs.speed, 6, 72, 22);
   let showPreview = prefs.preview === true;
+  let gesturesEnabled = prefs.gestures !== false;
+  let settingsOpen = false;
   let active = false;
   let running = false;
   let frame = 0;
@@ -28,6 +30,10 @@
   const waits = Array.isArray(DECK.waits) ? DECK.waits : [];
   let cardIndex = -1;
   let cardReturnFocus = null;
+  let gesture = null;
+  let lastTap = null;
+  let feedbackTimer = 0;
+  const touches = new Set();
 
   function el(tag, cls, text) {
     const node = document.createElement(tag);
@@ -43,7 +49,7 @@
     return node;
   }
   function save() {
-    try { localStorage.setItem(STORE, JSON.stringify({ fontSize: fontSize, speed: speed, preview: showPreview })); } catch (_) { /* 선택한 값은 이번 창에서 유지합니다. */ }
+    try { localStorage.setItem(STORE, JSON.stringify({ fontSize: fontSize, speed: speed, preview: showPreview, gestures: gesturesEnabled })); } catch (_) { /* 선택한 값은 이번 창에서 유지합니다. */ }
   }
 
   const toggle = button("프롬프터", "quiet", function () { setActive(true); });
@@ -58,17 +64,16 @@
   root.setAttribute("aria-label", "발표자 프롬프터");
   const header = el("header", "prompter-head");
   const identity = el("div", "prompter-identity");
-  const eyebrow = el("div", "prompter-eyebrow");
-  const tvStatus = el("span", "prompter-tv-status", "TV 원격 연결 안 됨");
+  const tvStatus = el("span", "prompter-tv-status", "TV 미연결");
   tvStatus.setAttribute("role", "status");
-  eyebrow.append(el("span", "", "발표자 화면"), tvStatus);
+  tvStatus.title = "TV 원격 연결 안 됨";
   const title = el("h2", "prompter-title");
   title.id = "prompter-slide-title";
   const count = el("span", "prompter-count");
   count.setAttribute("aria-live", "polite");
   const heading = el("div", "prompter-heading");
-  heading.append(count, title);
-  identity.append(eyebrow, heading);
+  heading.append(count, title, tvStatus);
+  identity.append(heading);
   const navigation = el("nav", "prompter-nav");
   navigation.setAttribute("aria-label", "발표 장 이동");
   const prev = button("← 이전", "prompter-button", function () { LectureGuide.go(LectureGuide.index - 1); }, "이전 장");
@@ -103,7 +108,7 @@
   waitsToggle.hidden = !waits.length;
   waitsToggle.setAttribute("aria-haspopup", "dialog");
   waitsToggle.setAttribute("aria-controls", "prompter-waits");
-  toolbar.append(fontControls, previewToggle, waitsToggle, tv, exit);
+  toolbar.append(fontControls, previewToggle, tv, exit);
 
   const viewport = el("div", "prompter-viewport");
   viewport.tabIndex = 0;
@@ -129,9 +134,9 @@
   viewport.appendChild(reading);
 
   const footer = el("footer", "prompter-footer");
-  const scrollButton = button("자동 스크롤", "prompter-button prompter-scroll-button", function () {
+  const scrollButton = button("스크롤", "prompter-button prompter-scroll-button", function () {
     if (running) pause(); else start();
-  });
+  }, "자동 스크롤");
   scrollButton.setAttribute("aria-pressed", "false");
   const speedControl = el("label", "prompter-speed");
   const speedLabel = el("span", "", "속도");
@@ -149,8 +154,34 @@
   speedControl.append(speedLabel, speedInput);
   const status = el("p", "prompter-status", "다음 장은 직접 넘겨 주세요");
   status.setAttribute("role", "status");
-  footer.append(scrollButton, speedControl, status);
-  root.append(header, toolbar, viewport, footer);
+  footer.append(speedControl, status);
+  const settingsToggle = button("설정", "prompter-button prompter-settings-toggle", function () { setSettings(!settingsOpen); });
+  settingsToggle.setAttribute("aria-controls", "prompter-settings");
+  settingsToggle.setAttribute("aria-expanded", "false");
+  const headerActions = el("div", "prompter-head-actions");
+  headerActions.append(waitsToggle, scrollButton, settingsToggle);
+  header.insertBefore(headerActions, navigation);
+  const settings = el("section", "prompter-settings");
+  settings.id = "prompter-settings";
+  settings.hidden = true;
+  settings.setAttribute("aria-label", "프롬프터 설정");
+  const gestureLabel = el("label", "prompter-gesture-toggle");
+  const gestureToggle = el("input");
+  gestureToggle.type = "checkbox";
+  gestureToggle.checked = gesturesEnabled;
+  gestureToggle.addEventListener("change", function () {
+    gesturesEnabled = gestureToggle.checked;
+    resetGesture();
+    save();
+  });
+  gestureLabel.append(gestureToggle, el("span", "", "대본에서 손짓으로 장 넘기기"));
+  const gestureHelp = el("p", "prompter-gesture-help", "한 손가락으로 왼쪽으로 밀면 다음 장, 오른쪽으로 밀면 이전 장입니다. 대본의 오른쪽 가장자리를 두 번 톡 하면 다음, 왼쪽 가장자리는 이전입니다. 가운데 두 번 톡과 두 손가락 확대는 장을 넘기지 않습니다. 세로로 움직이면 대본만 스크롤됩니다. 카드에서는 장 넘김이 작동하지 않습니다.");
+  settings.append(toolbar, footer, gestureLabel, gestureHelp);
+  const feedback = el("p", "prompter-feedback");
+  feedback.setAttribute("role", "status");
+  feedback.setAttribute("aria-live", "polite");
+  feedback.setAttribute("aria-atomic", "true");
+  root.append(header, settings, viewport, feedback);
   document.body.appendChild(root);
 
   // 같은 문서의 모달로 카드를 읽습니다. 장 번호·주소·연결 세션은 바꾸지 않습니다.
@@ -232,6 +263,8 @@
   function openCards() {
     if (!active || !waits.length || cardsDialog.open) return;
     pause("대기 카드를 열어 대본 자동 스크롤을 멈췄습니다");
+    resetGesture();
+    setSettings(false);
     cardReturnFocus = document.activeElement;
     cardsContext.textContent = "청중 화면은 " + (LectureGuide.index + 1) + "장에 그대로 · " + title.textContent;
     drawCards();
@@ -305,6 +338,91 @@
   }
   function scrollSurface() { return cardsDialog.open ? cardsReading : viewport; }
 
+  function setSettings(on) {
+    if (settingsOpen === on) return;
+    if (on) pause("설정을 열어 자동 스크롤을 멈췄습니다");
+    resetGesture();
+    settingsOpen = on;
+    settings.hidden = !on;
+    settingsToggle.textContent = on ? "닫기" : "설정";
+    settingsToggle.setAttribute("aria-expanded", String(on));
+    fitViewport();
+  }
+  function resetGesture() { gesture = null; lastTap = null; }
+  function announce(message) {
+    clearTimeout(feedbackTimer);
+    feedback.textContent = message;
+    feedback.classList.add("is-visible");
+    feedbackTimer = setTimeout(function () { feedback.classList.remove("is-visible"); }, 1800);
+  }
+  function gestureBlocked(target) {
+    return !active || !gesturesEnabled || settingsOpen || cardsDialog.open ||
+      Boolean(document.querySelector('dialog[open], [aria-modal="true"]:not([hidden])')) ||
+      Boolean(window.visualViewport && Math.abs(window.visualViewport.scale - 1) > .01) ||
+      Boolean(String(window.getSelection() || "")) ||
+      Boolean(target && target.closest('button, a, input, select, textarea, summary, [contenteditable]:not([contenteditable="false"]), .prompter-preview, .prompter-reminders'));
+  }
+  function gestureGo(direction) {
+    resetGesture();
+    const current = LectureGuide.index;
+    const target = Math.max(0, Math.min(DECK.slides.length - 1, current + direction));
+    if (target === current) { announce(direction > 0 ? "마지막 장입니다" : "첫 장입니다"); return; }
+    LectureGuide.go(target);
+    announce((direction > 0 ? "다음" : "이전") + " · " + (target + 1) + " / " + DECK.slides.length);
+  }
+
+  // Pointer Events 한 종류만 사용합니다. 세로 스크롤·확대는 브라우저가 처리합니다.
+  document.addEventListener("pointerdown", function (event) {
+    if (event.pointerType !== "touch") return;
+    touches.add(event.pointerId);
+    if (touches.size > 1) resetGesture();
+  }, true);
+  viewport.addEventListener("pointerdown", function (event) {
+    if (event.pointerType !== "touch" || !event.isPrimary || touches.size !== 1 || gestureBlocked(event.target)) { resetGesture(); return; }
+    gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now(), scroll: viewport.scrollTop, index: LectureGuide.index, maxX: 0, maxY: 0 };
+  });
+  document.addEventListener("pointermove", function (event) {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    gesture.maxX = Math.max(gesture.maxX, Math.abs(event.clientX - gesture.x));
+    gesture.maxY = Math.max(gesture.maxY, Math.abs(event.clientY - gesture.y));
+    if (gesture.maxX > 12 || gesture.maxY > 12) {
+      lastTap = null;
+      if (!gesture.moved && performance.now() - gesture.time > 300) { resetGesture(); return; }
+      gesture.moved = true;
+    }
+    if (gesture.maxY > 36 || Math.abs(viewport.scrollTop - gesture.scroll) > 3) resetGesture();
+  }, { passive: true });
+  document.addEventListener("pointerup", function (event) {
+    if (event.pointerType !== "touch") return;
+    touches.delete(event.pointerId);
+    if (!gesture || event.pointerId !== gesture.id) return;
+    const g = gesture;
+    gesture = null;
+    const now = performance.now(), elapsed = now - g.time;
+    const dx = event.clientX - g.x, dy = event.clientY - g.y;
+    if (touches.size || gestureBlocked(event.target) || g.index !== LectureGuide.index || Math.abs(viewport.scrollTop - g.scroll) > 3 || elapsed > 700) { lastTap = null; return; }
+    if (Math.abs(dx) >= 96 && Math.max(g.maxY, Math.abs(dy)) <= 36 && Math.abs(dx) >= Math.max(1, g.maxY, Math.abs(dy)) * 3) {
+      event.preventDefault();
+      gestureGo(dx < 0 ? 1 : -1);
+      return;
+    }
+    if (elapsed > 240 || Math.max(g.maxX, Math.abs(dx), g.maxY, Math.abs(dy)) > 12) { lastTap = null; return; }
+    const box = viewport.getBoundingClientRect();
+    const relative = (event.clientX - box.left) / box.width;
+    const side = relative <= .28 ? -1 : relative >= .72 ? 1 : 0;
+    if (!side) { lastTap = null; return; }
+    if (lastTap && lastTap.side === side && lastTap.index === g.index && now - lastTap.time <= 320 && Math.hypot(lastTap.x - event.clientX, lastTap.y - event.clientY) <= 32) {
+      event.preventDefault();
+      gestureGo(side);
+    } else lastTap = { side: side, index: g.index, x: event.clientX, y: event.clientY, time: now };
+  }, { passive: false });
+  document.addEventListener("pointercancel", function (event) {
+    if (event.pointerType !== "touch") return;
+    touches.delete(event.pointerId);
+    resetGesture();
+  });
+  document.addEventListener("selectionchange", function () { if (String(window.getSelection() || "")) resetGesture(); });
+
   function applyPreferences() {
     root.style.setProperty("--prompter-font-size", fontSize + "px");
     cardsDialog.style.setProperty("--prompter-font-size", fontSize + "px");
@@ -335,6 +453,7 @@
     // Safari 주소창·화면 키보드가 차지한 높이를 빼고, 확대 중에는 브라우저에 맡깁니다.
     const height = visual && visual.scale === 1 ? visual.height : window.innerHeight;
     root.style.setProperty("--prompter-height", height + "px");
+    root.style.setProperty("--prompter-head-height", header.getBoundingClientRect().height + "px");
     cardsDialog.style.setProperty("--prompter-height", height + "px");
     fitPreview();
   }
@@ -344,6 +463,7 @@
     const slide = DECK.slides[index];
     if (!slide) return;
     const changed = renderedIndex !== index;
+    if (changed) { resetGesture(); setSettings(false); }
     pause(changed ? "새 장입니다. 준비되면 자동 스크롤을 켜세요" : undefined);
     renderedIndex = index;
     title.textContent = LectureSlides.slideLabel(slide);
@@ -373,6 +493,7 @@
   function setActive(on) {
     if (active === on) return;
     pause();
+    resetGesture();
     active = on;
     root.hidden = !on;
     toggle.setAttribute("aria-expanded", String(on));
@@ -387,6 +508,7 @@
       requestWakeLock();
     } else {
       closeCards();
+      setSettings(false);
       releaseWakeLock();
       document.body.classList.remove("prompter-on");
       window.dispatchEvent(new Event("resize"));
@@ -416,7 +538,8 @@
     cancelAnimationFrame(frame);
     frame = 0;
     lastTime = null;
-    scrollButton.textContent = "자동 스크롤";
+    scrollButton.textContent = "스크롤";
+    scrollButton.setAttribute("aria-label", "자동 스크롤");
     scrollButton.setAttribute("aria-pressed", "false");
     cardScrollButton.textContent = "자동 스크롤";
     cardScrollButton.setAttribute("aria-pressed", "false");
@@ -433,7 +556,8 @@
     running = true;
     lastTime = null;
     scrollPosition = surface.scrollTop;
-    scrollButton.textContent = "일시정지";
+    scrollButton.textContent = "멈춤";
+    scrollButton.setAttribute("aria-label", "자동 스크롤 일시정지");
     scrollButton.setAttribute("aria-pressed", "true");
     cardScrollButton.textContent = "일시정지";
     cardScrollButton.setAttribute("aria-pressed", "true");
@@ -468,24 +592,30 @@
   });
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
+      resetGesture();
+      touches.clear();
       pause("다른 화면으로 이동해 자동 스크롤을 멈췄습니다");
       releaseWakeLock();
     } else if (active) requestWakeLock();
   });
-  window.addEventListener("pagehide", releaseWakeLock);
+  function clearTouchState() { resetGesture(); touches.clear(); }
+  window.addEventListener("pagehide", function () { clearTouchState(); releaseWakeLock(); });
+  window.addEventListener("blur", clearTouchState);
   window.addEventListener("lecture-remote-status", function (event) {
     const connected = Boolean(event.detail && event.detail.connected);
-    tvStatus.textContent = connected ? "TV 원격 연결됨" : "TV 원격 연결 안 됨";
+    tvStatus.textContent = connected ? "TV 연결" : "TV 미연결";
+    tvStatus.title = connected ? "TV 원격 연결됨" : "TV 원격 연결 안 됨";
     tvStatus.classList.toggle("is-connected", connected);
   });
   document.addEventListener("keydown", function (event) {
     if (!active || event.key !== "Escape" || event.defaultPrevented) return;
     if (document.querySelector('dialog[open], [aria-modal="true"]:not([hidden])')) return;
     event.preventDefault();
+    if (settingsOpen) { setSettings(false); settingsToggle.focus({ preventScroll: true }); return; }
     setActive(false);
   });
-  window.addEventListener("resize", function () { if (active) { pause(); fitViewport(); } });
-  if (window.visualViewport) window.visualViewport.addEventListener("resize", function () { if (active) { pause(); fitViewport(); } });
+  window.addEventListener("resize", function () { clearTouchState(); if (active) { pause(); fitViewport(); } });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", function () { clearTouchState(); if (active) { pause(); fitViewport(); } });
   if (window.ResizeObserver) new ResizeObserver(fitPreview).observe(previewBox);
   LectureGuide.onPaint(render);
   applyPreferences();
