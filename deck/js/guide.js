@@ -253,6 +253,8 @@
 
   document.addEventListener("keydown", function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+    if (document.querySelector("dialog[open]")) return;
+    if (e.target && e.target.tagName === "SELECT") return;
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
     const selected = String(window.getSelection() || "");
     if (selected && (e.key === "ArrowLeft" || e.key === "ArrowRight")) return;

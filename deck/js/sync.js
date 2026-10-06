@@ -7,6 +7,7 @@
   var KEY = hash.toString(36);
   var SOURCE = "lecture-deck-" + KEY;
   var listeners = [];
+  var emitters = []; // 기기 간 발표 연결은 장 번호만 구독합니다.
   var reloaders = []; // 교안 편집 모드에서 저장하면 청중 화면을 다시 읽습니다.
 
   function post(win, msg) {
@@ -27,6 +28,7 @@
   function fire(n) { listeners.forEach(function (fn) { fn(n); }); }
   function handle(data, from) {
     if (!data || data.source !== SOURCE) return;
+    if (document.body.dataset.remoteControlled === "true" && data.type === "go") return;
     if (from && from !== window) window.__lecturePeer = from;
     if (data.type === "hello") {
       post(from, { source: SOURCE, type: "go", index: window.__lectureIndex || 0 });
@@ -49,8 +51,17 @@
 
   window.LectureSync = {
     setIndex: function (index) { window.__lectureIndex = index; },
+    getIndex: function () { return window.__lectureIndex || 0; },
+    onEmit: function (fn) { emitters.push(fn); },
+    receive: function (index) {
+      if (!Number.isInteger(index) || index < 0 || !window.DECK || index >= DECK.slides.length) return;
+      fire(index);
+    },
     on: function (fn) { listeners.push(fn); },
-    emit: function (index) { send({ source: SOURCE, type: "go", index: index }); },
+    emit: function (index) {
+      send({ source: SOURCE, type: "go", index: index });
+      emitters.forEach(function (fn) { fn(index); });
+    },
     onReload: function (fn) { reloaders.push(fn); },
     reload: function () { send({ source: SOURCE, type: "reload" }); },
     hello: function () {

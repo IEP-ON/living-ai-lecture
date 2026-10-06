@@ -803,6 +803,8 @@
     return;
   }
   var shot = /[?&]shot\b/.test(location.search);
+  var tv = new URLSearchParams(location.search).get("tv") === "1";
+  if (tv) document.body.dataset.remoteControlled = "true";
   if (shot) document.body.classList.add("shot");
 
   var frame = document.getElementById("frame");
@@ -811,7 +813,7 @@
   var index = -1;
 
   function fit() {
-    var chromeH = document.fullscreenElement || shot ? 0 : 72;
+    var chromeH = document.fullscreenElement || shot || tv ? 0 : 72;
     var scale = shot ? 1 : Math.min(window.innerWidth / 1280, (window.innerHeight - chromeH) / 720);
     viewport.style.width = Math.floor(1280 * scale) + "px";
     viewport.style.height = Math.floor(720 * scale) + "px";
@@ -837,6 +839,7 @@
   }
   function go(n, opts) {
     opts = opts || {};
+    if (document.body.dataset.remoteControlled === "true" && !opts.silent) return;
     var next = clamp(n), changed = next !== index;
     index = next;
     LectureSync.setIndex(index);
@@ -865,6 +868,9 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+    if (e.target && e.target.closest("input, textarea, select, button, a, [contenteditable=true], dialog")) return;
+    if (document.querySelector("dialog[open]")) return;
+    if (document.body.dataset.remoteControlled === "true" && !["f", "F"].includes(e.key)) return;
     if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " " || e.key === "Enter") { e.preventDefault(); go(index + 1); }
     else if (e.key === "ArrowLeft" || e.key === "PageUp" || e.key === "Backspace") { e.preventDefault(); go(index - 1); }
     else if (e.key === "Home") { e.preventDefault(); go(0); }
