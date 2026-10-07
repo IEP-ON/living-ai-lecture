@@ -1,0 +1,69 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "RIDIBatang";
+  src: url("../fonts/RIDIBatang.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --ink: #123746;
+  --muted: #557077;
+  --line: #CCD9D5;
+  --paper: #F7F4ED;
+  --paper-2: #EAEAE5;
+  --card: #ffffff;
+  --forest: #123746;
+  --accent: #237477;
+  --signal: #E99B59;
+  --wrong: #C2553A;
+  --canvas: #E1EBEB;
+  --soft: #DCEAE5;
+  --apricot: #F1B58D;
+  --night: #0C2F3D;
+  --night-2: #123746;
+  --night-line: #2C5263;
+  --night-ink: #F7F4ED;
+  --night-muted: #9DB6BC;
+  --mint: #52A7C1;
+  --sans: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --serif: var(--sans);
+  --presenter: #152b3a;
+  --focus: #B9DDE3;
+  --warning-ink: #784918;
+  --warning-paper: #fff0dc;
+  --error-ink: #a63a20;
+  --error-paper: #fdece7;
+  /* 템플릿 교안 화면이 쓰는 이름 */
+  --green: var(--forest);
+  --char: var(--ink);
+  --red: var(--wrong);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 450;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+@keyframes blink { 50% { opacity: 0; } }
