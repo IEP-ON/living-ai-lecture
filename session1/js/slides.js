@@ -305,7 +305,7 @@
     title(s, d);
     var row = el("div", "duo");
     list(d.items).forEach(function (p, i) {
-      if (i) row.appendChild(R("span", "duo-x", "×"));
+      if (i) row.appendChild(R("span", "duo-x", d.connector || "×"));
       row.appendChild(el("div", "duo-card", [R("p", "duo-name", p.name), p.role ? R("p", "duo-role", p.role) : null, R("p", "duo-text", p.text)]));
     });
     s.appendChild(row);
