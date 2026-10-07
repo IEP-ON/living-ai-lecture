@@ -163,7 +163,7 @@ body.shot .viewport { box-shadow: none; }
 
 /* ── pair · 둘 나란히 + 한 줄 ── */
 .duo { position: absolute; left: 80px; right: 80px; top: 184px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 26px; }
-.duo-card { padding: 30px 34px; }
+.duo-card { padding: 30px 34px; text-align: center; }
 .duo-name { font-size: 48px; font-weight: 700; letter-spacing: -.055em; }
 .duo-role { margin-top: 6px !important; font-size: 21px; font-weight: 600; color: var(--muted); }
 .duo-text { margin-top: 22px !important; font-size: 27px; font-weight: 680; line-height: 1.42; letter-spacing: -.035em; }
