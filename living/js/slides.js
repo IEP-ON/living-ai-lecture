@@ -302,13 +302,13 @@
     if (d.tagsNote) s.appendChild(R("p", "ov-note", d.tagsNote));
   };
 
-  /* 두 사람·두 대상 나란히 + 깨달음 한 줄 */
+  /* 두 사람·두 대상 나란히 + 깨달음 한 줄 (선택: items[].img 아바타) */
   L.pair = function (s, d) {
     title(s, d);
     var row = el("div", "duo");
     list(d.items).forEach(function (p, i) {
       if (i) row.appendChild(R("span", "duo-x", d.connector || "×"));
-      row.appendChild(el("div", "duo-card", [R("p", "duo-name", p.name), p.role ? R("p", "duo-role", p.role) : null, R("p", "duo-text", p.text)]));
+      row.appendChild(el("div", "duo-card" + (p.img ? " has-ava" : ""), [p.img ? img(p.img, p.alt, "duo-ava") : null, R("p", "duo-name", p.name), p.role ? R("p", "duo-role", p.role) : null, R("p", "duo-text", p.text)]));
     });
     s.appendChild(row);
     if (d.lesson) s.appendChild(R("p", "duo-lesson", d.lesson));
@@ -585,7 +585,7 @@
     s.appendChild(grid);
   };
 
-  /* 앱(학교)과 모델(학생), 생각 강도 막대 */
+  /* 앱(학교)과 모델(학생), 생각 강도 막대 (선택: models[].img 아바타) */
   L.models = function (s, d) {
     title(s, d);
     var apps = el("div", "md-apps", [R("p", "md-head", d.appsHead || "앱 · 서비스")]);
@@ -596,7 +596,7 @@
     s.appendChild(apps);
     var st = el("div", "md-students", [R("p", "md-head", d.modelsHead || "모델")]);
     var cards = el("div", "md-cards");
-    list(d.models).forEach(function (m) { cards.appendChild(el("div", "md-card", [R("b", "", m.name), R("span", "", m.text)])); });
+    list(d.models).forEach(function (m) { cards.appendChild(el("div", "md-card" + (m.img ? " has-ava" : ""), [m.img ? img(m.img, m.alt, "md-ava") : null, R("b", "", m.name), R("span", "", m.text)])); });
     st.appendChild(cards);
     s.appendChild(st);
     if (d.effort) {

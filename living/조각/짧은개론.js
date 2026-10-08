@@ -30,7 +30,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/표지_인사.png",
+        "src": "images/캐릭터/표지_인사.png",
         "alt": "말풍선에 물음표와 파일을 띄우고 손을 흔드는 AI 학생 로봇",
         "x": 820,
         "y": 132,
@@ -93,7 +93,7 @@ window.DECK = {
         }
       ],
       "art": {
-        "src": "images/짧은개론/첫머리_두로봇.png",
+        "src": "images/캐릭터/첫머리_두로봇.png",
         "alt": "공책을 든 로봇과 지도를 펼친 로봇",
         "x": 604,
         "y": 300,
@@ -163,7 +163,7 @@ window.DECK = {
         "size": 30
       },
       "art": {
-        "src": "images/짧은개론/왜_생각하는로봇.png",
+        "src": "images/캐릭터/왜_생각하는로봇.png",
         "alt": "머리 위에 물음표를 띄우고 생각하는 AI 학생 로봇",
         "x": 878,
         "y": 150,
@@ -189,7 +189,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/시연_빼꼼.png",
+        "src": "images/캐릭터/시연_빼꼼.png",
         "alt": "입력창 위로 고개를 내밀고 기다리는 로봇",
         "x": 900,
         "y": 125,
@@ -211,7 +211,7 @@ window.DECK = {
             "복사해서 한글에 붙인다",
             "양식은 *내 손으로* 맞춘다"
           ],
-          "img": "images/짧은개론/사람_지친교사.png",
+          "img": "images/캐릭터/사람_지친교사.png",
           "alt": "땀을 흘리며 지친 선생님"
         },
         {
@@ -223,7 +223,7 @@ window.DECK = {
             "결과가 *그림판에* 남는다"
           ],
           "strong": true,
-          "img": "images/짧은개론/로봇_얼굴_일하는.png",
+          "img": "images/캐릭터/로봇_얼굴_일하는.png",
           "alt": "번개 배지를 단, 일하는 로봇"
         }
       ],
@@ -296,7 +296,7 @@ window.DECK = {
         "size": 27
       },
       "art": {
-        "src": "images/짧은개론/원래쓰던AI_노트북.png",
+        "src": "images/캐릭터/원래쓰던AI_노트북.png",
         "alt": "노트북을 안고 말풍선을 띄운 로봇",
         "x": 874,
         "y": 150,
@@ -349,14 +349,14 @@ window.DECK = {
       "lines": [
         {
           "name": "선생님들",
-          "img": "images/짧은개론/사람_선생님들.png",
+          "img": "images/캐릭터/사람_선생님들.png",
           "alt": "시큰둥한 표정의 선생님",
           "text": "“좋은데요…\n우리 애들한테는 안 맞아요.”",
           "tone": "light"
         },
         {
           "name": "저",
-          "img": "images/짧은개론/사람_저.png",
+          "img": "images/캐릭터/사람_저.png",
           "alt": "웃는 강사",
           "side": "right",
           "text": "맞습니다. 교육 전문가니까,\n*신중해야* 합니다.",
@@ -370,7 +370,7 @@ window.DECK = {
         "w": 900
       },
       "art": {
-        "src": "images/짧은개론/고칠수있다_렌치.png",
+        "src": "images/캐릭터/고칠수있다_렌치.png",
         "alt": "렌치를 들고 고치는 로봇",
         "x": 1016,
         "y": 494,
@@ -407,7 +407,7 @@ window.DECK = {
         }
       ],
       "art": {
-        "src": "images/짧은개론/지도_출발.png",
+        "src": "images/캐릭터/지도_출발.png",
         "alt": "배낭을 메고 손을 흔들며 출발하는 로봇",
         "x": 84,
         "y": 456,
@@ -430,25 +430,25 @@ window.DECK = {
         {
           "icon": "bolt",
           "text": "빠릿한\n모델",
-          "img": "images/짧은개론/학생_빠릿한.png",
+          "img": "images/캐릭터/학생_빠릿한.png",
           "alt": "번개 배지에 운동화를 신고 달려가는 로봇"
         },
         {
           "icon": "book",
           "text": "느리지만\n기억력 좋은 모델",
-          "img": "images/짧은개론/학생_기억력.png",
+          "img": "images/캐릭터/학생_기억력.png",
           "alt": "동그란 안경을 쓰고 책 세 권을 안은 로봇"
         },
         {
           "icon": "brush",
           "text": "그림을\n잘 그리는 모델",
-          "img": "images/짧은개론/학생_그림.png",
+          "img": "images/캐릭터/학생_그림.png",
           "alt": "베레모를 쓰고 붓과 팔레트를 든 로봇"
         },
         {
           "icon": "battery",
           "text": "체력 좋은\n모델",
-          "img": "images/짧은개론/학생_체력.png",
+          "img": "images/캐릭터/학생_체력.png",
           "alt": "머리띠를 두르고 두 팔을 번쩍 든, 배터리가 꽉 찬 로봇"
         }
       ],
@@ -461,7 +461,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/사람_저_머쓱.png",
+        "src": "images/캐릭터/사람_저_머쓱.png",
         "alt": "땀을 흘리며 머쓱하게 웃는 강사",
         "x": 80,
         "y": 470,
@@ -531,7 +531,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/시험지_연필.png",
+        "src": "images/캐릭터/시험지_연필.png",
         "alt": "땀 한 방울을 흘리며 자신만만하게 연필을 든 로봇",
         "x": 1040,
         "y": 452,
@@ -563,7 +563,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/확인_돋보기.png",
+        "src": "images/캐릭터/확인_돋보기.png",
         "alt": "돋보기를 든 로봇",
         "x": 960,
         "y": 96,
@@ -712,7 +712,7 @@ window.DECK = {
             "에듀파인 엑셀 서식 건네기",
             "“30명에서 마감되는 설문”"
           ],
-          "img": "images/짧은개론/사람_수업전.png",
+          "img": "images/캐릭터/사람_수업전.png",
           "alt": "바빠서 땀 흘리는 선생님"
         },
         {
@@ -724,7 +724,7 @@ window.DECK = {
             "설문 만들고 링크 남기기"
           ],
           "strong": true,
-          "img": "images/짧은개론/로봇_얼굴_일하는.png",
+          "img": "images/캐릭터/로봇_얼굴_일하는.png",
           "alt": "번개 배지를 단, 일하는 로봇"
         },
         {
@@ -735,7 +735,7 @@ window.DECK = {
             "고칠 곳만 다시 맡기기",
             "올리기"
           ],
-          "img": "images/짧은개론/사람_검수.png",
+          "img": "images/캐릭터/사람_검수.png",
           "alt": "웃으며 확인 표시를 단 선생님"
         }
       ],
@@ -763,7 +763,7 @@ window.DECK = {
       },
       "waitPart": 0,
       "art": {
-        "src": "images/짧은개론/커피_100장.png",
+        "src": "images/캐릭터/커피_100장.png",
         "alt": "커피 잔 옆, 100장 보고서 더미 위에서 두 팔을 든 로봇. 더미 옆구리에 빨간 느낌표 종이가 삐져나와 있음",
         "x": 900,
         "y": 100,
@@ -798,7 +798,7 @@ window.DECK = {
         "y": 340
       },
       "art": {
-        "src": "images/짧은개론/감독_교육전문개발자.png",
+        "src": "images/캐릭터/감독_교육전문개발자.png",
         "alt": "‘선생님’이라고 적힌 감독 의자와 메가폰, 파일을 나르는 로봇 둘",
         "x": 560,
         "y": 352,
@@ -876,7 +876,7 @@ window.DECK = {
         }
       ],
       "art": {
-        "src": "images/짧은개론/첫말_인사.png",
+        "src": "images/캐릭터/첫말_인사.png",
         "alt": "‘첫 말!’ 말풍선을 띄우고 손을 흔드는 로봇",
         "x": 900,
         "y": 104,

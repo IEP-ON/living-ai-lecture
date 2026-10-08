@@ -1,5 +1,5 @@
 /* 스티커 테마(theme: "sticker") · 장면(scene) · 대화(chat) · 지도(map) · 말풍선(bubble)
-   2026-10-08 짧은 개론 새 단장. AI 학생 로봇 그림(잉크 테두리 5px)과 같은 결로: 굵은 잉크 테두리, 둥근 모서리, 어긋난 그림자, 형광펜 강조.
+   2026-10-08 짧은 개론 새 단장(같은 날 개론에도 적용). AI 학생 로봇 그림(잉크 테두리 5px)과 같은 결로: 굵은 잉크 테두리, 둥근 모서리, 어긋난 그림자, 형광펜 강조.
    테마는 조각에 theme: "sticker"를 적으면 그 조각의 장에만 붙습니다(.slide.theme-sticker). 다른 조각의 화면은 그대로입니다.
    장면 · 대화 · 지도 · 말풍선은 테마 없이도 쓸 수 있게 기본 모양을 따로 둡니다. 색은 css/base.css의 이름만 씁니다. */
 
@@ -177,6 +177,8 @@
 .theme-sticker .ck-aside { color: var(--ink); font-weight: 700; }
 
 /* 책상(desk) */
+.theme-sticker .desk-legend p { border: 3px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); }
+.theme-sticker .desk-legend .desk-on { background: var(--ink); border-color: var(--ink); box-shadow: 4px 4px 0 var(--signal); }
 .theme-sticker .desk { border: 3px solid var(--ink); border-radius: 24px; background: var(--soft); box-shadow: 7px 7px 0 var(--ink); }
 .theme-sticker .paper { border: 2.5px solid var(--ink); border-radius: 12px; box-shadow: 3px 3px 0 var(--ink); }
 .theme-sticker .paper.squash { box-shadow: 0 8px 0 #DCEAE5, 0 9px 0 #9BBEB7, 0 16px 0 #fff, 0 17px 0 #9BBEB7; }
@@ -231,3 +233,200 @@
 /* 그림과 글(split) */
 .theme-sticker .media.with-frame { border: 3px solid var(--ink); border-radius: 24px; box-shadow: 7px 7px 0 var(--ink); }
 .theme-sticker .sp-msg { font-weight: 800; }
+
+/* ═════ 2026-10-08 개론 새 단장: 개론에만 있는 화면 유형 ═════ */
+/* 번호 단계(steps · 오늘 연수) */
+.theme-sticker .ov-steps { gap: 46px; top: 190px; }
+.theme-sticker .ov-steps li { min-height: 0; padding: 20px 18px 24px; border: 3px solid var(--ink); border-radius: 22px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .ov-steps li:nth-child(2) { background: var(--soft); }
+.theme-sticker .ov-steps li:nth-child(3) { background: color-mix(in srgb, var(--apricot) 45%, var(--card)); }
+.theme-sticker .ov-steps li b { display: inline-flex; align-items: center; justify-content: center; width: 62px; height: 62px; border: 3px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+.theme-sticker .ov-steps li > span { margin-top: 14px; font-size: 30px; font-weight: 800; }
+.theme-sticker .ov-steps li + li::before { left: -23px; top: 50%; background: var(--ink); }
+.theme-sticker .ov-mods span { padding: 8px 18px; border: 2.5px solid var(--ink); background: var(--card); color: var(--ink); font-weight: 700; box-shadow: 3px 3px 0 var(--ink); }
+.theme-sticker .ov-mods span:nth-child(3n + 2) { background: var(--soft); }
+.theme-sticker .ov-mods span:nth-child(3n) { background: color-mix(in srgb, var(--apricot) 55%, var(--card)); }
+.theme-sticker .ov-note { color: var(--ink); font-weight: 600; }
+
+/* 두 사람 나란히(pair) · 아바타는 테마 없이도 */
+.theme-sticker .duo { top: 176px; gap: 30px; }
+.theme-sticker .duo-card { padding: 24px 30px 26px; border: 3px solid var(--ink); border-radius: 24px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .duo-card ~ .duo-card { background: var(--soft); }
+.theme-sticker .duo-x { font-weight: 800; color: var(--ink); }
+.theme-sticker .duo-name { font-weight: 800; }
+.theme-sticker .duo-role { display: inline-block; padding: 2px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 18px; }
+.theme-sticker .duo-text { font-size: 25px; }
+.theme-sticker .duo-lesson { font-weight: 600; }
+.duo-card.has-ava { display: grid; grid-template-columns: 96px 1fr; grid-template-areas: "ava name" "ava role" "text text"; column-gap: 18px; align-items: center; text-align: left; }
+.duo-ava { grid-area: ava; display: block; width: 96px; height: 96px; object-fit: contain; }
+.duo-card.has-ava .duo-name { grid-area: name; align-self: end; }
+.duo-card.has-ava .duo-role { grid-area: role; align-self: start; justify-self: start; }
+.duo-card.has-ava .duo-text { grid-area: text; }
+
+/* 갈피 · 연표(section) */
+.theme-sticker .sec-kick { top: 58px; padding: 4px 16px; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 17px; letter-spacing: .02em; box-shadow: 3px 3px 0 #04161d; }
+.theme-sticker .sec-title { font-weight: 800; }
+.theme-sticker .sec-title::before { content: none; }
+.theme-sticker.layout-section:has(.art) .sec-number { display: none; }
+.theme-sticker .tl::before { top: 12px; height: 0; border-top: 3px dashed rgba(247, 244, 237, .4); background: none; }
+.theme-sticker .tl li i { top: 0; width: 26px; height: 26px; border: 3px solid var(--paper); background: var(--night); }
+.theme-sticker .tl li.now i { background: var(--signal); border-color: var(--paper); box-shadow: 0 0 0 6px rgba(233, 155, 89, .25); }
+.theme-sticker .tl li b { font-weight: 800; }
+.theme-sticker .tl li.now b { color: var(--apricot); }
+
+/* 큰 낱말 ≈ 큰 낱말(equals) */
+.theme-sticker .terms { top: 186px; gap: 24px; }
+.theme-sticker .term { padding: 34px 30px 20px; border: 3px solid var(--ink); border-radius: 26px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); font-size: 104px; font-weight: 800; }
+.theme-sticker .terms .term:nth-child(3) { background: var(--soft); }
+.theme-sticker .terms .term:nth-child(5) { background: color-mix(in srgb, var(--apricot) 60%, var(--card)); }
+.theme-sticker .term-index { top: 10px; left: 18px; color: var(--ink); font-weight: 700; }
+.theme-sticker .term:last-child::after { content: none; }
+.theme-sticker .approx { padding-top: 0; font-weight: 800; color: var(--ink); }
+.theme-sticker .def { top: 410px; font-weight: 800; }
+.theme-sticker .terms-sub { top: 470px; }
+
+/* 표시가 붙은 칸 + 큰 숫자(marks) */
+.theme-sticker .rl-col { border: 3px solid var(--ink); border-radius: 20px; background: var(--card); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .rl-col.leak { background: color-mix(in srgb, var(--apricot) 35%, var(--card)); }
+.theme-sticker .rl-col.miss { background: var(--soft); }
+.theme-sticker .rl-head { display: inline-block; padding: 2px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 15px; }
+.theme-sticker .rl-col li b { font-weight: 800; }
+.theme-sticker .rl-arrow { color: var(--ink); }
+.theme-sticker .rl-call { border: 3px solid var(--ink); border-radius: 22px; background: var(--ink); box-shadow: 6px 6px 0 var(--signal); }
+
+/* 인용 + 오른쪽 풀이(quote · after) */
+.theme-sticker .qt-after { padding: 6px 24px; border: 3px solid var(--ink); border-radius: 22px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .qt-after li + li { border-top: 2px dashed rgba(18, 55, 70, .2); }
+.theme-sticker .qt-after li:first-child { color: var(--ink); font-weight: 800; }
+
+/* 연결 전 · 후(net) */
+.theme-sticker .net-fig { padding: 12px 12px 14px; border: 3px solid var(--ink); border-radius: 22px; background: var(--card); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .net-fig.after { background: var(--soft); }
+.theme-sticker .net-fig figcaption { width: fit-content; margin: 6px auto 0; padding: 0 14px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); }
+.theme-sticker .net-arrow { color: var(--ink); }
+.theme-sticker .net-msg { font-weight: 800; }
+
+/* 밝은 카드 ↔ 짙은 카드(contrast) */
+.theme-sticker .hd { gap: 44px; }
+.theme-sticker .hd-card { min-height: 236px; border: 3px solid var(--ink); border-radius: 24px; box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .hd-card.is-desk { background: var(--ink); box-shadow: 6px 6px 0 var(--signal); }
+.theme-sticker .hd-card.is-desk::after { content: none; }
+.theme-sticker .hd-head { display: inline-block; padding: 3px 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--soft); color: var(--ink); font-size: 18px; letter-spacing: 0; }
+.theme-sticker .hd-card.is-desk .hd-head { border-color: var(--paper); background: var(--apricot); color: var(--ink); }
+.theme-sticker .hd-big { font-weight: 800; }
+.theme-sticker .hd-card.is-desk .hl { color: var(--apricot); background: none; }
+
+/* 빈칸 놀이(blank) */
+.theme-sticker .blank { border: 3px solid var(--paper); border-radius: 26px; background: var(--paper); color: var(--ink); box-shadow: 9px 9px 0 #04161d; font-weight: 500; }
+.theme-sticker .blank-gap { border-bottom-color: var(--accent); }
+.theme-sticker .blank .pr-send { background: var(--ink); color: var(--paper); }
+
+/* 길찾기(route) */
+.theme-sticker .nv { padding: 16px 22px; border: 3px solid var(--ink); border-radius: 24px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .nv-dest { border-bottom: 2px dashed rgba(18, 55, 70, .2); font-weight: 700; }
+.theme-sticker .route-bed { stroke: rgba(18, 55, 70, .1); stroke-width: 30; }
+.theme-sticker .route-line { stroke: var(--ink); stroke-width: 5; stroke-dasharray: 1 14; }
+.theme-sticker .route-stop { fill: var(--card); stroke: var(--ink); stroke-width: 4; }
+.theme-sticker .route-stop.last { fill: var(--signal); stroke: var(--ink); }
+.theme-sticker .nv-route li { font-weight: 700; }
+.theme-sticker .nv-quote { padding: 20px 24px; border: 3px solid var(--ink); border-radius: 24px; background: var(--soft); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .nv-quote p { font-size: 27px; font-weight: 500; }
+
+/* 토큰 조각(tokens) */
+.theme-sticker .tk-row { border-top: 2px dashed rgba(18, 55, 70, .2); }
+.theme-sticker .tk-chip { border: 2.5px solid var(--ink); border-radius: 8px; font-weight: 600; box-shadow: 2px 2px 0 var(--ink); }
+.theme-sticker .tk-chip.half { border: 2.5px dashed var(--wrong); background: var(--apricot); box-shadow: none; }
+.theme-sticker .tk-row.first .tk-chip { border-width: 3px; border-radius: 14px; box-shadow: 4px 4px 0 var(--ink); font-weight: 800; }
+.theme-sticker .tk-row.first .tk-chip.half { box-shadow: none; }
+.theme-sticker .tk-count { font-weight: 800; color: var(--ink); }
+
+/* 관계선(attention) */
+.theme-sticker .att-from { fill: var(--ink); stroke: var(--ink); stroke-width: 3; }
+.theme-sticker .att-to { fill: var(--apricot); stroke: var(--ink); stroke-width: 3; }
+.theme-sticker .att-word { font-weight: 800; }
+.theme-sticker .att-msg { font-weight: 800; }
+
+/* 머리글자 풀이(letters) */
+.theme-sticker .gpt-title { color: var(--night-ink); font-weight: 800; }
+.theme-sticker .gpt { gap: 34px; }
+.theme-sticker .gpt-col { padding: 16px 24px 22px; border: 3px solid var(--paper); border-radius: 26px; background: var(--paper); color: var(--ink); box-shadow: 7px 7px 0 #04161d; }
+.theme-sticker .gpt-col:nth-child(2) { background: var(--soft); }
+.theme-sticker .gpt-col:nth-child(3) { background: var(--apricot); }
+.theme-sticker .gl { font-size: 170px; font-weight: 800; color: var(--ink); }
+.theme-sticker .gen { color: var(--accent); font-weight: 700; }
+.theme-sticker .gko { font-weight: 800; }
+.theme-sticker .gtx { color: var(--ink); opacity: .75; }
+
+/* 큰 문장의 판정 칩(statement · checks) */
+.theme-sticker .st-checks .ck { border: 3px solid var(--ink); background: var(--card); color: var(--ink); font-weight: 700; box-shadow: 4px 4px 0 var(--ink); }
+.theme-sticker .st-checks .ck.no { background: var(--wrong); color: #fff; }
+.theme-sticker .st-checks .ck.no b { color: #fff; }
+.theme-sticker.is-dark .st-checks .ck { border-color: var(--paper); box-shadow: 4px 4px 0 #04161d; }
+.theme-sticker.is-dark .st-checks .ck.ok { background: var(--paper); color: var(--ink); }
+.theme-sticker.is-dark .st-checks .ck.ok b { color: var(--accent); }
+
+/* 인용 카드 + 2 × 2(quotegrid) */
+.theme-sticker .br-quote { padding: 26px 30px 24px; border: 3px solid var(--ink); border-radius: 26px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .br-quote p { font-size: 32px; font-weight: 500; }
+.theme-sticker .br-grid { gap: 18px; border: 0; }
+.theme-sticker .br-item { min-height: 156px; padding: 18px 22px; border: 3px solid var(--ink); border-radius: 22px; background: var(--card); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .br-item:nth-child(2) { background: var(--soft); }
+.theme-sticker .br-item:nth-child(3) { background: color-mix(in srgb, var(--apricot) 45%, var(--card)); }
+.theme-sticker .br-item:nth-child(4) { background: color-mix(in srgb, var(--mint) 22%, var(--card)); }
+.theme-sticker .br-item b { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 2.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 15px; font-weight: 800; }
+.theme-sticker .br-head { margin-top: 10px !important; font-weight: 800; }
+.theme-sticker .br-text { color: var(--ink); opacity: .75; }
+
+/* 앱 · 모델 · 생각 강도(models) · 모델 아바타는 테마 없이도 */
+.theme-sticker .md-chips span { border: 2.5px solid var(--ink); font-weight: 700; box-shadow: 3px 3px 0 var(--ink); }
+.theme-sticker .md-chips span.me { background: var(--ink); border-color: var(--ink); color: var(--paper); box-shadow: 3px 3px 0 var(--signal); }
+.theme-sticker .md-orbit span { border: 3px solid var(--ink); background: var(--soft); color: var(--ink); font-weight: 800; }
+.theme-sticker .md-orbit::before { border: 2.5px dashed rgba(18, 55, 70, .35); }
+.theme-sticker .md-card { border: 3px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .md-card:nth-child(2) { background: var(--soft); }
+.theme-sticker .md-card:nth-child(3) { background: color-mix(in srgb, var(--apricot) 45%, var(--card)); }
+.theme-sticker .md-card b { font-weight: 800; }
+.theme-sticker .md-track span { border: 3px solid var(--ink); border-radius: 16px; font-weight: 700; }
+.theme-sticker .md-track span:nth-child(3) { background: var(--ink); border-color: var(--ink); }
+.theme-sticker .md-track span.current { box-shadow: 5px 5px 0 var(--signal); }
+.md-card { position: relative; }
+.md-card.has-ava { padding-right: 82px; }
+.md-ava { position: absolute; right: 6px; top: -26px; width: 78px; height: 78px; object-fit: contain; }
+
+/* 같은 부탁, 두 결과(askcompare) */
+.theme-sticker .tt-ask { border: 3px solid var(--paper); border-radius: 22px; background: var(--paper); color: var(--ink); box-shadow: 7px 7px 0 #04161d; font-weight: 600; }
+.theme-sticker .tt-ask .pr-send { background: var(--ink); color: var(--paper); }
+.theme-sticker .tt-col { border: 3px solid var(--paper); border-radius: 22px; background: rgba(247, 244, 237, .08); box-shadow: 6px 6px 0 #04161d; }
+.theme-sticker .tt-col.agent { background: var(--apricot); color: var(--ink); }
+.theme-sticker .tt-head { display: inline-block; padding: 2px 12px; border: 2px solid var(--paper); border-radius: 999px; color: var(--night-ink); font-size: 17px; letter-spacing: 0; }
+.theme-sticker .tt-col.agent .tt-head { border-color: var(--ink); background: var(--paper); color: var(--ink); }
+.theme-sticker .tt-col.agent .hl { color: var(--ink); background-image: linear-gradient(transparent 60%, var(--paper) 60%, var(--paper) 94%, transparent 94%); text-decoration: none; }
+
+/* 비유(analogy) */
+.theme-sticker .ag-words span { border: 2.5px solid var(--ink); background: var(--card); color: var(--ink); font-weight: 700; box-shadow: 3px 3px 0 var(--ink); }
+.theme-sticker .ag-words span:nth-child(2) { background: var(--soft); }
+.theme-sticker .ag-dish { border: 3px solid var(--ink); border-radius: 22px; background: var(--card); box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .ag-dish.main { background: var(--ink); color: var(--paper); box-shadow: 6px 6px 0 var(--signal); }
+.theme-sticker .ag-dish b { font-weight: 800; }
+.theme-sticker .ag-arrow path { stroke: var(--ink); stroke-width: 4; }
+.theme-sticker .ag-office { padding: 14px 22px 16px; border: 3px solid var(--ink); border-radius: 20px; background: var(--soft); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .ag-office p { font-weight: 500; }
+.theme-sticker .ag-office span { color: var(--ink); }
+
+/* 화면 모음(gallery) · 같은 요청의 결과(results) · 앱 배치도(anatomy) */
+.theme-sticker .app img { border: 3px solid var(--paper); border-radius: 14px; }
+.theme-sticker .app figcaption b { font-weight: 800; }
+.theme-sticker .sm-ask { padding: 15px 19px 17px; border: 3px solid var(--ink); border-radius: 20px; background: var(--card); box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .sm-ask-label { border-radius: 999px; background: var(--ink); }
+.theme-sticker .sm-rows { border: 3px solid var(--ink); border-radius: 18px; overflow: hidden; box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .sm-row { border: 0; border-top: 2px dashed rgba(18, 55, 70, .18); }
+.theme-sticker .sm-row:first-child { border-top: 0; background: var(--ink); }
+.theme-sticker .sm-result img { border: 3px solid var(--ink); border-radius: 16px; box-shadow: 6px 6px 0 var(--ink); }
+.theme-sticker .an-win { height: 410px; border: 3px solid var(--ink); border-radius: 20px; overflow: hidden; box-shadow: 5px 5px 0 var(--ink); }
+.theme-sticker .an-top { border-radius: 0; background: var(--ink); }
+.theme-sticker .an-body { height: 368px; }
+.theme-sticker .an-doc, .theme-sticker .an-input { border: 2.5px solid var(--ink); border-radius: 12px; }
+.theme-sticker .an-msg.ai { border: 2px solid var(--ink); }
+.theme-sticker .an-badge, .theme-sticker .an-parts li > b { border: 3px solid var(--ink); }
+.theme-sticker .an-parts li { border-top: 2px dashed rgba(18, 55, 70, .2); }
+.theme-sticker .an-head { font-weight: 800; }
