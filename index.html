@@ -74,6 +74,7 @@
         <div class="presets" id="presets">
           <button type="button" class="preset" data-set="intro,s1"><b>1회차</b><span>개론 → 이미지 · 수업설계</span></button>
           <button type="button" class="preset" data-set="recap,s2,end"><b>2회차 · 이어서</b><span>돌아보기 → 행정 · 바이브코딩 → 마무리</span></button>
+          <button type="button" class="preset" data-set="brief,s2,end"><b>2회차 · 섞인 날</b><span>짧은 개론 → 행정 · 바이브코딩 → 마무리</span></button>
           <button type="button" class="preset" data-set="intro,s2,end"><b>2회차만 하는 날</b><span>개론 → 행정 · 바이브코딩 → 마무리</span></button>
           <button type="button" class="preset" data-set="intro,s1,s2,end"><b>하루에 모두</b><span>개론 → 1회기 → 2회기 → 마무리</span></button>
         </div>
@@ -111,6 +112,7 @@
   </main>
   <script src="living/조각/돌아보기.js"></script>
   <script src="living/조각/개론.js"></script>
+  <script src="living/조각/짧은개론.js"></script>
   <script src="living/조각/1회기.js"></script>
   <script src="living/조각/2회기.js"></script>
   <script src="living/조각/마무리.js"></script>
@@ -122,8 +124,8 @@
     var C = window.LectureCompose;
     if (!C) return;
     var KEY = "living-lecture-set";
-    var LABEL = { recap: "돌아보기", intro: "개론", s1: "1회기", s2: "2회기", end: "마무리" };
-    var NOTE = { recap: "2회차 첫머리", intro: "자기소개 · 개론", s1: "이미지 · 수업설계", s2: "행정 · 바이브코딩", end: "개인정보 이야기" };
+    var LABEL = { recap: "돌아보기", intro: "개론", brief: "짧은 개론", s1: "1회기", s2: "2회기", end: "마무리" };
+    var NOTE = { recap: "지난번 분들만 온 날", intro: "자기소개 · 개론", brief: "처음 온 분이 섞인 날", s1: "이미지 · 수업설계", s2: "행정 · 바이브코딩", end: "개인정보 이야기" };
     var presetName = {};
     document.querySelectorAll(".preset").forEach(function (b) { presetName[b.dataset.set] = b.querySelector("b").textContent; });
     var chips = document.getElementById("chips");
