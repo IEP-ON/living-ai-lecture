@@ -3,7 +3,8 @@
 /* ── 청중 화면 틀 ── */
 body.deck { height: 100%; overflow: hidden; background: var(--canvas); }
 .stage { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
-.viewport { position: relative; overflow: hidden; background: var(--paper); box-shadow: 0 12px 40px rgba(18, 55, 70, .1), 0 0 0 1px rgba(18, 55, 70, .05); }
+/* max-width: 휴대폰에서 엔진이 크기를 정하기 전 1280px 무대가 화면을 밀어 넓히지 않게(2026-10-08) */
+.viewport { position: relative; overflow: hidden; max-width: 100%; background: var(--paper); box-shadow: 0 12px 40px rgba(18, 55, 70, .1), 0 0 0 1px rgba(18, 55, 70, .05); }
 .canvas { position: relative; width: 1280px; height: 720px; transform-origin: top left; background: var(--paper); }
 .dock { display: flex; align-items: center; gap: 8px; }
 .hint { margin: 0 12px 0 0; color: var(--muted); font-size: 13px; font-weight: 500; }
