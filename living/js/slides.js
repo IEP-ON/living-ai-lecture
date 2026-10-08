@@ -181,6 +181,7 @@
     var box = el("div", "st");
     box.appendChild(R("p", "st-text", d.text));
     if (d.sub) box.appendChild(R("p", "st-sub", d.sub));
+    if (d.chips) box.appendChild(el("div", "st-chips", list(d.chips).map(function (c) { return R("span", "st-chip", c); })));
     if (d.checks) {
       var row = el("div", "st-checks");
       d.checks.forEach(function (c) { row.appendChild(el("span", "ck " + (c.ok ? "ok" : "no"), [R("b", "", c.ok ? "✓" : "✕"), R("span", "", c.t)])); });
@@ -252,7 +253,8 @@
     title(s, d);
     var wrap = el("div", "cmp cols-" + list(d.columns).length);
     list(d.columns).forEach(function (c) {
-      var col = el("div", "cmp-col" + (c.strong ? " strong" : ""));
+      var col = el("div", "cmp-col" + (c.strong ? " strong" : "") + (c.img ? " has-ava" : ""));
+      if (c.img) col.appendChild(img(c.img, c.alt, "cmp-ava"));
       col.appendChild(R("p", "cmp-head", c.head));
       var ol = el("ol", "cmp-flow");
       list(c.lines).forEach(function (line) { ol.appendChild(R("li", "", line)); });
@@ -711,7 +713,7 @@
     title(s, d);
     var row = el("div", "day");
     list(d.cols).forEach(function (c) {
-      var col = el("div", "day-col" + (c.strong ? " strong" : ""), [el("i", "day-dot"), R("p", "day-when", c.when), c.who ? R("p", "day-who", c.who) : null]);
+      var col = el("div", "day-col" + (c.strong ? " strong" : ""), [el("i", "day-dot"), c.img ? img(c.img, c.alt, "day-ava") : null, R("p", "day-when", c.when), c.who ? R("p", "day-who", c.who) : null]);
       var ul = el("ul");
       list(c.lines).forEach(function (t) { ul.appendChild(R("li", "", t)); });
       col.appendChild(ul);
@@ -831,9 +833,70 @@
   function slideLabel(slide) {
     return plain(slide.label || slide.title || slide.text || slide.quote || slide.verse || "제목 없음").split("\n")[0];
   }
+  /* ── 장면 · 대화 · 지도 (2026-10-08, 짧은 개론의 스티커 테마와 함께 더함. 테마 없이도 그려집니다) ── */
+  /* 자리 정하기: {x, y, w, size, align} — 1280 × 720 기준 px */
+  function place(node, at) {
+    if (!at) return node;
+    if (at.x != null) node.style.left = at.x + "px";
+    if (at.y != null) node.style.top = at.y + "px";
+    if (at.w != null) node.style.width = at.w + "px";
+    if (at.size != null) node.style.fontSize = at.size + "px";
+    if (at.align) node.style.textAlign = at.align;
+    return node;
+  }
+  /* 장면: 큰 글(text) · 작은 글(sub) · 칩(chips) · 말풍선(bubbles)을 그림(art)과 함께 자리를 정해 둡니다.
+     text · sub · chips의 자리는 textAt · subAt · chipsAt, 말풍선은 bubbles[{text, x, y, w, size, tone: light · soft · warm · ink · signal, tail: down · down-right · left · right · up}] */
+  L.scene = function (s, d) {
+    title(s, d);
+    subtitle(s, d);
+    if (d.text) s.appendChild(place(R("p", "sc-text", d.text), d.textAt));
+    if (d.sub) s.appendChild(place(R("p", "sc-sub", d.sub), d.subAt));
+    if (d.chips) s.appendChild(place(el("div", "sc-chips", list(d.chips).map(function (c) { return R("span", "sc-chip", c); })), d.chipsAt));
+    list(d.bubbles).forEach(function (b) {
+      s.appendChild(place(R("p", "bubble tone-" + (b.tone || "light") + (b.tail ? " tail-" + b.tail : ""), b.text), b));
+    });
+    foot(s, d);
+  };
+  /* 대화: 아바타와 말풍선을 위에서 아래로. lines[{name, text, img, alt, side: left · right, tone}], after(아래 결론 한 줄, afterAt으로 자리) */
+  L.chat = function (s, d) {
+    title(s, d);
+    var box = el("div", "chat");
+    list(d.lines).forEach(function (l) {
+      var right = l.side === "right";
+      var who = el("div", "chat-who", [l.img ? img(l.img, l.alt || l.name || "", "chat-ava") : null, l.name ? R("span", "chat-name", l.name) : null]);
+      box.appendChild(el("div", "chat-row" + (right ? " right" : ""), [who, R("p", "bubble chat-bubble tone-" + (l.tone || "light") + (right ? " tail-right" : " tail-left"), l.text)]));
+    });
+    s.appendChild(box);
+    if (d.after) s.appendChild(place(R("p", "chat-after", d.after), d.afterAt));
+    foot(s, d);
+  };
+  /* 지도: 정거장을 굽은 길 위에 둡니다. stops[{head, text}], now(켤 정거장 번호 · 선택) */
+  L.map = function (s, d) {
+    title(s, d);
+    subtitle(s, d);
+    var stops = list(d.stops), n = stops.length, W = 1120, H = 330, x0 = 90, x1 = W - 90;
+    var pts = stops.map(function (_, i) { return [x0 + (x1 - x0) * (n > 1 ? i / (n - 1) : 0), i % 2 ? 214 : 96]; });
+    var path = pts.reduce(function (acc, p, i) {
+      if (!i) return "M" + p[0] + " " + p[1];
+      var q = pts[i - 1], mx = (q[0] + p[0]) / 2;
+      return acc + " C" + mx + " " + q[1] + " " + mx + " " + p[1] + " " + p[0] + " " + p[1];
+    }, "");
+    var wrap = el("div", "map");
+    wrap.appendChild(svg("svg", { class: "map-svg", viewBox: "0 0 " + W + " " + H, "aria-hidden": "true" }, [svg("path", { d: path, class: "map-bed" }), svg("path", { d: path, class: "map-line" })]));
+    stops.forEach(function (st, i) {
+      var stop = el("div", "map-stop" + (d.now === i + 1 ? " now" : ""), [R("b", "map-n", pad(i + 1)), R("p", "map-head", st.head), st.text ? R("p", "map-text", st.text) : null]);
+      stop.style.left = pts[i][0] + "px";
+      stop.style.top = pts[i][1] + "px";
+      wrap.appendChild(stop);
+    });
+    s.appendChild(wrap);
+    foot(s, d);
+  };
+
   function buildSlide(slide, index) {
     var sec = document.createElement("section");
-    sec.className = "slide layout-" + slide.layout + (slide.tone === "dark" ? " is-dark" : "") + (slide.overflow ? " is-over" : "");
+    var theme = slide.theme || (window.DECK && DECK.theme);
+    sec.className = "slide layout-" + slide.layout + (slide.tone === "dark" ? " is-dark" : "") + (slide.overflow ? " is-over" : "") + (theme ? " theme-" + theme : "");
     sec.setAttribute("role", "group");
     sec.setAttribute("aria-roledescription", "슬라이드");
     sec.setAttribute("aria-label", (index + 1) + ". " + slideLabel(slide));

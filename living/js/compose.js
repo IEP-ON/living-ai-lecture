@@ -104,6 +104,7 @@
         });
         delete s.if;
         delete s.vary;
+        if (piece.theme && !s.theme) s.theme = piece.theme; // 조각의 테마(예: 짧은 개론의 스티커)는 그 조각의 장에만
         if (s.part) s.part = shift(s.part);
         if (s.waitPart) s.waitPart = shift(s.waitPart);
         if (s.module) {
