@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>질문에서 결과물까지 · 1회차</title>
+  <title>질문에서 결과물까지</title>
   <style>
-    @font-face { font-family: "Pretendard Variable"; src: url("session1/fonts/PretendardVariable.woff2") format("woff2-variations"); font-weight: 45 920; font-display: swap; }
-    :root { --ink:#123746; --paper:#F7F4ED; --accent:#237477; --muted:#557077; --line:#CCD9D5; --warm:#E99B59; }
+    @font-face { font-family: "Pretendard Variable"; src: url("living/fonts/PretendardVariable.woff2") format("woff2-variations"); font-weight: 45 920; font-display: swap; }
+    :root { --ink:#123746; --paper:#F7F4ED; --accent:#237477; --muted:#557077; --line:#CCD9D5; --warm:#E99B59; --soft:#DCEAE5; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--paper); color:var(--ink); font-family:"Pretendard Variable",Pretendard,"Malgun Gothic","Apple SD Gothic Neo",sans-serif; word-break:keep-all; overflow-wrap:break-word; -webkit-font-smoothing:antialiased; }
     main { max-width:880px; margin:0 auto; padding:48px 28px 56px; }
@@ -17,16 +17,39 @@
     .lead { margin:16px 0 30px; color:var(--muted); font-size:17px; line-height:1.7; }
     .lecture { padding:28px; border:1px solid var(--line); border-radius:10px; background:#fffefa; }
     h2 { margin:0; font-size:27px; line-height:1.35; letter-spacing:-.045em; }
+    h3 { margin:0 0 12px; font-size:16px; color:var(--muted); font-weight:650; }
     .what { margin:10px 0 24px; color:var(--muted); font-size:16px; line-height:1.7; }
     .go { margin:0; display:flex; flex-wrap:wrap; gap:10px; }
     .go.primary { display:grid; grid-template-columns:1fr 1fr; margin-bottom:12px; }
     .go a { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:11px 17px; border-radius:7px; border:1px solid var(--line); color:var(--ink); background:#fffefa; font-size:16px; font-weight:650; text-decoration:none; touch-action:manipulation; }
     .go.primary a { min-height:58px; font-size:18px; }
     .go a.main { background:var(--ink); border-color:var(--ink); color:#fff; }
-    .go a:hover { background:#DCEAE5; }
+    .go a:hover { background:var(--soft); }
     .go a.main:hover { background:var(--accent); }
-    a:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+    a:focus-visible, button:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
     .hint { margin:18px 0 0; color:var(--muted); font-size:14px; line-height:1.65; }
+
+    .pick { margin:0 0 26px; }
+    .presets { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0 0 22px; }
+    .preset { display:block; text-align:left; padding:14px 16px; border:1px solid var(--line); border-radius:8px; background:#fffefa; color:var(--ink); font:inherit; cursor:pointer; touch-action:manipulation; }
+    .preset b { display:block; font-size:17px; letter-spacing:-.03em; }
+    .preset span { display:block; margin-top:4px; color:var(--muted); font-size:14px; }
+    .preset:hover { background:var(--soft); }
+    .preset[aria-pressed="true"] { border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); background:#EEF4F1; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
+    .chip { min-height:44px; padding:9px 14px; border:1px solid var(--line); border-radius:999px; background:#fffefa; color:var(--ink); font:inherit; font-size:15px; font-weight:600; cursor:pointer; touch-action:manipulation; }
+    .chip small { color:var(--muted); font-weight:500; margin-left:6px; }
+    .chip[aria-pressed="true"] { background:var(--ink); border-color:var(--ink); color:#fff; }
+    .chip[aria-pressed="true"] small { color:#cfe0db; }
+    .chip .n { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-right:6px; border-radius:50%; background:var(--warm); color:var(--ink); font-size:13px; font-weight:700; }
+    .chip .n[hidden] { display:none; }
+    .order { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:0; padding:12px 14px; border-radius:8px; background:#EEF4F1; font-size:17px; font-weight:650; }
+    .order .arrow { color:var(--accent); }
+    .order .empty { color:var(--muted); font-weight:500; font-size:15px; }
+    .sum { margin:10px 0 0; color:var(--muted); font-size:14px; line-height:1.6; }
+    .clear { margin-left:auto; min-height:36px; padding:4px 12px; border:1px solid var(--line); border-radius:6px; background:#fffefa; color:var(--muted); font:inherit; font-size:14px; cursor:pointer; }
+    .go a[aria-disabled="true"] { opacity:.45; pointer-events:none; }
+
     .setup { margin-top:32px; }
     .setup h2 { font-size:21px; }
     ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); list-style:none; counter-reset:setup; padding:0; margin:18px 0 0; gap:24px; }
@@ -34,7 +57,8 @@
     li::before { content:"0" counter(setup); display:block; color:var(--accent); font-size:24px; line-height:1.2; margin-bottom:10px; }
     li strong { display:block; color:var(--ink); font-size:17px; margin-bottom:5px; }
     .foot { margin:30px 0 0; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.7; }
-    @media(max-width:600px) { main{padding:28px 20px 40px}.brand{margin-bottom:26px}.lecture{padding:23px 20px}.go.primary{grid-template-columns:1fr}ol{grid-template-columns:1fr;gap:18px}li::before{float:left;width:44px;margin-top:3px}li{padding-left:44px}li::before{margin-left:-44px} }
+    .foot a { color:var(--muted); }
+    @media(max-width:600px) { main{padding:28px 16px 40px}.brand{margin-bottom:26px}.lecture{padding:23px 18px}.go.primary,.presets{grid-template-columns:1fr}ol{grid-template-columns:1fr;gap:18px}li::before{float:left;width:44px;margin-top:3px}li{padding-left:44px}li::before{margin-left:-44px} }
   </style>
 </head>
 <body>
@@ -42,32 +66,152 @@
     <p class="brand">LivingAI</p>
     <p class="course">교사를 위한 에이전트 AI 실습 연수</p>
     <h1>질문에서 결과물까지</h1>
-    <p class="lead">1회차를 한 화면에서 끝까지 진행합니다.<br>내 화면에는 대본을, 청중 화면에는 슬라이드를 띄우세요.</p>
+    <p class="lead">오늘 진행할 순서를 고르고 시작하세요.<br>고른 순서가 한 강의로 이어져, 교안을 바꾸거나 TV를 다시 연결하지 않습니다.</p>
+
     <section class="lecture" aria-labelledby="session-title">
-      <p class="part">1회차 · 90장</p>
-      <h2 id="session-title">도입·개론부터 이미지·수업설계까지</h2>
-      <p class="what">도입과 개론 → 이미지 실습 → 수업설계 실습<br>중간에 교안을 바꾸거나 TV를 다시 연결할 필요가 없습니다.</p>
+      <div class="pick">
+        <h3>자주 쓰는 순서</h3>
+        <div class="presets" id="presets">
+          <button type="button" class="preset" data-set="intro,s1"><b>1회차</b><span>개론 → 이미지 · 수업설계</span></button>
+          <button type="button" class="preset" data-set="recap,s2,end"><b>2회차 · 이어서</b><span>돌아보기 → 행정 · 바이브코딩 → 마무리</span></button>
+          <button type="button" class="preset" data-set="intro,s2,end"><b>2회차만 하는 날</b><span>개론 → 행정 · 바이브코딩 → 마무리</span></button>
+          <button type="button" class="preset" data-set="intro,s1,s2,end"><b>하루에 모두</b><span>개론 → 1회기 → 2회기 → 마무리</span></button>
+        </div>
+        <h3>직접 고르기 · 누르는 순서대로 이어집니다</h3>
+        <div class="chips" id="chips"></div>
+        <p class="order" id="order" aria-live="polite"><span class="empty">조각을 눌러 순서를 고르세요</span></p>
+        <p class="sum" id="sum"></p>
+      </div>
+
+      <p class="part" id="part">1회차</p>
+      <h2 id="session-title">개론 → 1회기</h2>
+      <p class="what" id="what">내 화면에는 대본을, 청중 화면에는 슬라이드를 띄우세요.</p>
       <div class="go primary">
-        <a class="main" href="session1/교안.html?prompter=1">프롬프터</a>
-        <a href="session1/index.html?tv=1">노트북·TV 화면</a>
+        <a class="main" id="go-prompter" href="living/교안.html?set=intro,s1&amp;prompter=1">프롬프터</a>
+        <a id="go-tv" href="living/index.html?set=intro,s1&amp;tv=1">노트북·TV 화면</a>
       </div>
       <div class="go">
-        <a href="session1/교안.html">교안 열기</a>
-        <a href="session1/index.html">발표 화면만</a>
-        <a href="session1/기다릴때.html">기다릴 때 카드 32개</a>
+        <a id="go-guide" href="living/교안.html?set=intro,s1">교안 열기</a>
+        <a id="go-slides" href="living/index.html?set=intro,s1">발표 화면만</a>
+        <a id="go-waits" href="living/기다릴때.html?set=intro,s1">기다릴 때 카드</a>
       </div>
       <p class="hint">기다릴 때 카드는 프롬프터 안에서도 열 수 있습니다. 카드를 읽는 동안 TV에는 현재 슬라이드가 유지됩니다.</p>
     </section>
+
     <section class="setup" aria-labelledby="setup-title">
       <h2 id="setup-title">아이패드 + 노트북 + TV로 진행하기</h2>
       <ol>
-        <li><strong>아이패드에서</strong>가로로 놓고 프롬프터를 엽니다. ‘설정 → TV 연결’에서 연결 코드를 만듭니다.</li>
-        <li><strong>노트북에서</strong>‘노트북·TV 화면’을 열고 아이패드에 나온 코드를 입력합니다.</li>
+        <li><strong>아이패드에서</strong>순서를 고르고 프롬프터를 가로로 엽니다. ‘설정 → TV 연결’에서 연결 코드를 만듭니다.</li>
+        <li><strong>노트북에서</strong>이 화면에서 같은 순서를 고르고 ‘노트북·TV 화면’을 열어 코드를 입력합니다. 프롬프터의 ‘TV 주소 복사’로 받은 주소를 열면 순서까지 맞춰집니다.</li>
         <li><strong>TV에 연결하고</strong>HDMI로 연결한 화면에 슬라이드를 띄우고 ‘전체 화면’을 누릅니다. 이제 아이패드에서 장을 넘깁니다.</li>
       </ol>
-      <p class="hint">아이패드와 노트북 모두 인터넷에 연결해 주세요. 노트북 화면을 TV에 그대로 복제해도 되고, 화면을 확장한 뒤 슬라이드 창만 TV로 옮겨도 됩니다.</p>
+      <p class="hint">아이패드와 노트북 모두 인터넷에 연결해 주세요. 두 기기의 순서가 다르면 다른 강의로 보고 연결되지 않습니다. 노트북 화면을 TV에 그대로 복제해도 되고, 화면을 확장한 뒤 슬라이드 창만 TV로 옮겨도 됩니다.</p>
     </section>
-    <p class="foot">Copyright © 2026 이성엽. 포함 글꼴의 라이선스는 강의 폴더의 fonts에 있습니다.</p>
+    <p class="foot">Copyright © 2026 이성엽. 포함 글꼴의 라이선스는 강의 폴더의 fonts에 있습니다. 예전 1회차 주소(<a href="session1/교안.html">session1</a>)도 그대로 열립니다.</p>
   </main>
+  <script src="living/조각/돌아보기.js"></script>
+  <script src="living/조각/개론.js"></script>
+  <script src="living/조각/1회기.js"></script>
+  <script src="living/조각/2회기.js"></script>
+  <script src="living/조각/마무리.js"></script>
+  <script src="living/js/compose.js"></script>
+  <script>
+  /* 순서 고르기: 바로가기나 조각을 누르면 아래 단추의 주소(?set=…)가 그 순서로 바뀝니다.
+     고른 순서는 이 주소(?set=)와 이 브라우저에 남아, 다음에 열어도 그대로입니다. */
+  (function () {
+    var C = window.LectureCompose;
+    if (!C) return;
+    var KEY = "living-lecture-set";
+    var LABEL = { recap: "돌아보기", intro: "개론", s1: "1회기", s2: "2회기", end: "마무리" };
+    var NOTE = { recap: "2회차 첫머리", intro: "자기소개 · 개론", s1: "이미지 · 수업설계", s2: "행정 · 바이브코딩", end: "개인정보 이야기" };
+    var presetName = {};
+    document.querySelectorAll(".preset").forEach(function (b) { presetName[b.dataset.set] = b.querySelector("b").textContent; });
+    var chips = document.getElementById("chips");
+    var order = document.getElementById("order");
+    var sum = document.getElementById("sum");
+    var current = [];
+
+    function save(ids) { try { localStorage.setItem(KEY, ids.join(",")); } catch (err) { /* 저장하지 못해도 고른 순서는 주소에 남습니다 */ } }
+    function load() { try { return localStorage.getItem(KEY) || ""; } catch (err) { return ""; } }
+    function minutes(deck) { return deck.slides.reduce(function (a, s) { return a + ((s.note && Number(s.note.minutes)) || 0); }, 0); }
+    function link(id, file, extra) {
+      document.getElementById(id).href = "living/" + file + "?set=" + current.join(",") + (extra ? "&" + extra : "");
+    }
+    function enable(on) {
+      document.querySelectorAll(".go a").forEach(function (a) { if (on) a.removeAttribute("aria-disabled"); else a.setAttribute("aria-disabled", "true"); });
+    }
+
+    function render() {
+      current = C.normalize(current);
+      var ids = current;
+      chips.querySelectorAll(".chip").forEach(function (b) {
+        var at = ids.indexOf(b.dataset.id), n = b.querySelector(".n");
+        b.setAttribute("aria-pressed", at >= 0 ? "true" : "false");
+        n.textContent = at >= 0 ? String(at + 1) : "";
+        n.hidden = at < 0;
+      });
+      document.querySelectorAll(".preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.set === ids.join(",") ? "true" : "false"); });
+      order.replaceChildren();
+      if (!ids.length) {
+        var e = document.createElement("span");
+        e.className = "empty";
+        e.textContent = "조각을 눌러 순서를 고르세요";
+        order.appendChild(e);
+        sum.textContent = "";
+        enable(false);
+        return;
+      }
+      ids.forEach(function (id, i) {
+        if (i) { var ar = document.createElement("span"); ar.className = "arrow"; ar.textContent = "→"; order.appendChild(ar); }
+        var t = document.createElement("span"); t.textContent = LABEL[id] || id; order.appendChild(t);
+      });
+      var clear = document.createElement("button");
+      clear.type = "button"; clear.className = "clear"; clear.textContent = "지우기";
+      clear.addEventListener("click", function () { current = []; render(); });
+      order.appendChild(clear);
+
+      var deck = C.build(ids);
+      var waits = (deck.waits || []).length;
+      sum.textContent = deck.slides.length + "장 · 이야기 약 " + Math.round(minutes(deck)) + "분(실습 시간은 따로)" + (waits ? " · 기다릴 때 카드 " + waits + "개" : "");
+      document.getElementById("part").textContent = presetName[ids.join(",")] || "직접 고른 순서";
+      document.getElementById("session-title").textContent = ids.map(function (id) { return LABEL[id] || id; }).join(" → ");
+      document.getElementById("what").textContent = ids.map(function (id) { return NOTE[id] || ""; }).join(" → ");
+      enable(true);
+      link("go-prompter", "교안.html", "prompter=1");
+      link("go-tv", "index.html", "tv=1");
+      link("go-guide", "교안.html");
+      link("go-slides", "index.html");
+      link("go-waits", "기다릴때.html");
+      var w = document.getElementById("go-waits");
+      w.textContent = "기다릴 때 카드 " + waits + "개";
+      w.hidden = !waits;
+      save(ids);
+      try { var u = new URL(location.href); u.searchParams.set("set", ids.join(",")); history.replaceState(null, "", u.href); } catch (err) { /* 파일로 연 경우 */ }
+    }
+
+    C.order.forEach(function (id) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.dataset.id = id;
+      var n = document.createElement("span"); n.className = "n"; n.hidden = true;
+      var s = document.createElement("small"); s.textContent = NOTE[id] || "";
+      b.append(n, document.createTextNode(LABEL[id] || id), s);
+      b.addEventListener("click", function () {
+        var at = current.indexOf(id);
+        if (at >= 0) current.splice(at, 1); else current.push(id);
+        render();
+      });
+      chips.appendChild(b);
+    });
+    document.querySelectorAll(".preset").forEach(function (b) {
+      b.addEventListener("click", function () { current = b.dataset.set.split(","); render(); });
+    });
+
+    var fromUrl = "";
+    try { fromUrl = new URLSearchParams(location.search).get("set") || ""; } catch (err) { fromUrl = ""; }
+    current = C.normalize(fromUrl || load() || "intro,s1");
+    if (!current.length) current = ["intro", "s1"];
+    render();
+  })();
+  </script>
 </body>
 </html>

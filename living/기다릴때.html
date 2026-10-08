@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>질문에서 결과물까지 · 기다릴 때</title>
+  <link rel="stylesheet" href="css/base.css?v=20261007-prompter2">
+  <style>
+    body.waits { margin: 0; padding: 28px 20px 64px; background: var(--paper-2); color: var(--ink); }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    header h1 { margin: 0 0 6px; font-size: 28px; font-weight: 800; letter-spacing: -.03em; }
+    header p { margin: 0 0 18px; font-size: 15px; line-height: 1.6; color: var(--muted, #5f6862); }
+    .bar { margin: 0 -20px 18px; padding: 12px 20px 10px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+    /* 넓은 화면에서만 고르기 막대를 위에 붙입니다(휴대폰에서는 화면을 너무 많이 가림). */
+    @media (min-width: 760px) and (min-height: 640px) {
+      .bar { position: sticky; top: 0; z-index: 2; }
+      .card, h2 { scroll-margin-top: calc(var(--waits-bar-height, 260px) + 14px); }
+    }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
+    .row b { flex: none; width: 44px; font-size: 13px; font-weight: 800; color: var(--muted, #5f6862); }
+    .chip { min-height: 44px; padding: 7px 12px; border: 1px solid #d3d8d1; border-radius: 999px; background: #fff; color: inherit; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+    .chip[aria-pressed="true"] { background: var(--forest, #1f5a43); border-color: var(--forest, #1f5a43); color: #fff; }
+    .chip small { margin-left: 4px; font-weight: 600; opacity: .7; }
+    .find { flex: 1 1 220px; min-width: 0; min-height: 44px; padding: 7px 12px; border: 1px solid #d3d8d1; border-radius: 10px; font: inherit; font-size: 16px; }
+    .sum { margin: 2px 0 0; font-size: 13px; color: var(--muted, #5f6862); }
+    .sum button { min-height: 44px; margin-left: 8px; padding: 0 8px; border: 0; background: none; color: var(--forest, #1f5a43); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; touch-action: manipulation; }
+    h2 { margin: 30px 0 12px; font-size: 21px; font-weight: 800; letter-spacing: -.02em; }
+    h2 small { margin-left: 8px; font-size: 14px; font-weight: 600; color: var(--muted, #5f6862); }
+    .card { margin: 0 0 14px; padding: 18px 22px 16px; border-radius: 14px; background: #fff; box-shadow: 0 3px 12px rgba(20, 30, 25, .06); break-inside: avoid; }
+    .card h3 { margin: 0 0 6px; font-size: 20px; font-weight: 800; letter-spacing: -.03em; line-height: 1.35; }
+    .card h3 .id { display: inline-block; margin-right: 8px; padding: 1px 7px; border-radius: 6px; background: #f1f3ef; color: var(--muted, #5f6862); font: 700 12px/1.6 Consolas, "D2Coding", monospace; vertical-align: 3px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; font-size: 12.5px; font-weight: 700; }
+    .meta span { padding: 3px 9px; border-radius: 999px; background: var(--soft); color: var(--forest); }
+    .meta .len { background: var(--warning-paper); color: var(--warning-ink); }
+    .meta .kind { background: var(--canvas); color: var(--ink); }
+    .meta .kind.warn { background: var(--error-paper); color: var(--error-ink); }
+    .card p { margin: 0 0 10px; font-size: 17px; line-height: 1.75; }
+    .card p .cue { color: #8a4b12; font-weight: 700; }
+    .card .extra { margin-top: 10px; padding-top: 10px; border-top: 1px solid #e3e6e1; font-size: 13px; line-height: 1.6; color: var(--muted, #5f6862); }
+    .card .extra b { color: var(--ink, #1c2420); }
+    .empty { padding: 30px 0; color: var(--muted, #5f6862); text-align: center; }
+    @media print {
+      body.waits { background: #fff; padding: 0; }
+      .bar { display: none; }
+      .card { box-shadow: none; border: 1px solid #d8dcd6; }
+    }
+  </style>
+</head>
+<body class="waits">
+  <div class="wrap">
+    <header>
+      <h1 id="title">기다릴 때 꺼내는 이야기</h1>
+      <p>슬라이드가 아닙니다. AI가 만드는 동안 실습 화면을 띄워 둔 채 꺼냅니다. 카드마다 <b>언제</b> · <b>길이</b> · <b>종류</b>가 있어 남은 시간에 맞는 것을 골라 씁니다. 인쇄하면 지금 골라 둔 카드만 나옵니다.</p>
+    </header>
+    <div class="bar" role="search">
+      <div class="row" id="f-part"><b>모듈</b></div>
+      <div class="row" id="f-kind"><b>종류</b></div>
+      <div class="row" id="f-len"><b>길이</b><input class="find" id="find" type="search" placeholder="낱말로 찾기 (예: 김대식, 25명, 규칙 파일)"></div>
+      <p class="sum" id="sum"></p>
+    </div>
+    <main id="list"></main>
+  </div>
+  <script src="조각/돌아보기.js?v=20261008-set1"></script>
+  <script src="조각/개론.js?v=20261008-set1"></script>
+  <script src="조각/1회기.js?v=20261008-set1"></script>
+  <script src="조각/2회기.js?v=20261008-set1"></script>
+  <script src="조각/마무리.js?v=20261008-set1"></script>
+  <script src="js/compose.js?v=20261008-set1"></script>
+  <script>
+    (function () {
+      var D = window.DECK || {}, waits = Array.isArray(D.waits) ? D.waits : [], parts = D.parts || [];
+      var list = document.getElementById("list"), sum = document.getElementById("sum"), find = document.getElementById("find");
+      var WARN = { "확인 필요": 1, "가상 예제": 1 };
+      function partName(p) { return p === 0 ? "어느 모듈이든" : (parts[p - 1] || "기타"); }
+      function plain(t) { return String(t || "").replace(/\*/g, ""); }
+      function time(m) { m = Number(m) || 0; return m < 1 ? Math.round(m * 60) + "초" : (m % 1 ? m.toFixed(1) : String(m)) + "분"; }
+      function add(parent, tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; parent.appendChild(n); return n; }
+      var store = "waits-v2:" + location.pathname.replace(/[^/]*$/, "") + ":";
+      function load(k, d) { try { var raw = localStorage.getItem(store + k); var v = JSON.parse(raw == null ? localStorage.getItem("waits-" + k) : raw); return v == null ? d : v; } catch (e) { return d; } }
+      function save(k, v) { try { localStorage.setItem(store + k, JSON.stringify(v)); } catch (e) {} }
+
+      // 고른 것: 모듈(여럿) · 종류(여럿, 하나라도 맞으면) · 길이 · 찾기
+      var pick = { part: load("part", []), kind: load("kind", []), len: load("len", "all"), q: "" };
+
+      var partOrder = [], kindCount = {};
+      waits.forEach(function (w) {
+        if (partOrder.indexOf(w.part) < 0) partOrder.push(w.part);
+        (w.kinds || []).forEach(function (k) { kindCount[k] = (kindCount[k] || 0) + 1; });
+      });
+      // 합치기 전 모듈 번호나 다른 강의의 선택이 남아 카드를 모두 숨기지 않도록 합니다.
+      pick.part = Array.isArray(pick.part) ? pick.part.filter(function (p) { return partOrder.indexOf(p) >= 0; }) : [];
+      pick.kind = Array.isArray(pick.kind) ? pick.kind.filter(function (k) { return Object.prototype.hasOwnProperty.call(kindCount, k); }) : [];
+      if (["all", "short", "long"].indexOf(pick.len) < 0) pick.len = "all";
+      function chip(row, label, n, on, fn) {
+        var b = add(row, "button", "chip", label);
+        b.type = "button";
+        if (n != null) add(b, "small", "", String(n));
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.addEventListener("click", fn);
+        return b;
+      }
+      function toggle(arr, v) { var i = arr.indexOf(v); if (i < 0) arr.push(v); else arr.splice(i, 1); }
+      function drawBar() {
+        var fp = document.getElementById("f-part"), fk = document.getElementById("f-kind"), fl = document.getElementById("f-len");
+        [fp, fk].forEach(function (r) { while (r.children.length > 1) r.removeChild(r.lastChild); });
+        Array.prototype.slice.call(fl.querySelectorAll(".chip")).forEach(function (c) { c.remove(); });
+        partOrder.forEach(function (p) {
+          var n = waits.filter(function (w) { return w.part === p; }).length;
+          chip(fp, partName(p), n, pick.part.indexOf(p) >= 0, function () { toggle(pick.part, p); save("part", pick.part); render(); });
+        });
+        Object.keys(kindCount).sort(function (a, b) { return kindCount[b] - kindCount[a]; }).forEach(function (k) {
+          chip(fk, k, kindCount[k], pick.kind.indexOf(k) >= 0, function () { toggle(pick.kind, k); save("kind", pick.kind); render(); });
+        });
+        [["all", "전체"], ["short", "1분 이하"], ["long", "1분 넘게"]].forEach(function (o) {
+          var b = chip(fl, o[1], null, pick.len === o[0], function () { pick.len = o[0]; save("len", pick.len); render(); });
+          fl.insertBefore(b, find);
+        });
+      }
+      function match(w) {
+        if (pick.part.length && pick.part.indexOf(w.part) < 0) return false;
+        if (pick.kind.length && !(w.kinds || []).some(function (k) { return pick.kind.indexOf(k) >= 0; })) return false;
+        var m = Number(w.minutes) || 0;
+        if (pick.len === "short" && m > 1) return false;
+        if (pick.len === "long" && m <= 1) return false;
+        if (pick.q) {
+          var hay = [w.id, w.title, w.when, w.say, w.point, w.source, (w.kinds || []).join(" "), partName(w.part)].join(" ").toLowerCase();
+          if (pick.q.split(/\s+/).some(function (t) { return t && hay.indexOf(t) < 0; })) return false;
+        }
+        return true;
+      }
+      function para(card, text) {
+        var p = add(card, "p");
+        // [청중에게] 같은 진행 지시는 색으로 구분
+        String(text).split(/(\[[^\]]+\])/).forEach(function (bit) {
+          if (!bit) return;
+          if (/^\[[^\]]+\]$/.test(bit)) add(p, "span", "cue", bit);
+          else p.appendChild(document.createTextNode(bit));
+        });
+      }
+      function render() {
+        drawBar();
+        list.innerHTML = "";
+        var shown = waits.filter(match), total = 0, last = null, head = null, headMin = 0, headN = 0;
+        function closeHead() { if (head) add(head, "small", "", headN + "개 · 약 " + time(headMin)); }
+        shown.forEach(function (w) {
+          if (w.part !== last) {
+            closeHead();
+            last = w.part; headMin = 0; headN = 0;
+            head = add(list, "h2", "", partName(w.part));
+          }
+          headMin += Number(w.minutes) || 0; headN += 1; total += Number(w.minutes) || 0;
+          var card = add(list, "article", "card");
+          card.id = w.id || "";
+          var h = add(card, "h3");
+          if (w.id) add(h, "span", "id", w.id);
+          h.appendChild(document.createTextNode(plain(w.title)));
+          var meta = add(card, "div", "meta");
+          if (w.when) add(meta, "span", "", plain(w.when));
+          add(meta, "span", "len", "약 " + time(w.minutes));
+          (w.kinds || []).forEach(function (k) { add(meta, "span", "kind" + (WARN[k] ? " warn" : ""), k); });
+          String(w.say || "").split(/\n\n+/).forEach(function (t) { if (t.trim()) para(card, t.trim()); });
+          if (w.point || w.source) {
+            var ex = add(card, "div", "extra");
+            if (w.point) { var a1 = add(ex, "div"); add(a1, "b", "", "짚을 것 "); a1.appendChild(document.createTextNode(w.point)); }
+            if (w.source) { var a2 = add(ex, "div"); add(a2, "b", "", "근거 "); a2.appendChild(document.createTextNode(w.source)); }
+          }
+        });
+        closeHead();
+        if (!shown.length) add(list, "p", "empty", "고른 조건에 맞는 카드가 없습니다.");
+        sum.textContent = "카드 " + shown.length + " / " + waits.length + "개 · 모두 말하면 약 " + time(Math.round(total * 10) / 10);
+        if (pick.part.length || pick.kind.length || pick.len !== "all" || pick.q) {
+          var clear = add(sum, "button", "", "모두 보기");
+          clear.type = "button";
+          clear.addEventListener("click", function () { pick = { part: [], kind: [], len: "all", q: "" }; find.value = ""; save("part", []); save("kind", []); save("len", "all"); render(); });
+        }
+      }
+      find.addEventListener("input", function () { pick.q = find.value.trim().toLowerCase(); render(); });
+      function measureBar() { document.documentElement.style.setProperty("--waits-bar-height", Math.ceil(document.querySelector(".bar").getBoundingClientRect().height) + "px"); }
+      if (window.ResizeObserver) new ResizeObserver(measureBar).observe(document.querySelector(".bar"));
+      if (!waits.length) { add(list, "p", "empty", "아직 카드가 없습니다."); return; }
+      render();
+      measureBar();
+      if (location.hash) { var t = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (t) t.scrollIntoView(); }
+    })();
+  </script>
+</body>
+</html>
