@@ -128,7 +128,7 @@
   }
 
   /* ── 고칠 칸 고르기와 이름 ── */
-  var SKIP = { "if": 1, vary: 1, module: 1, layout: 1, tone: 1, image: 1, icon: 1, focus: 1, fit: 1, mark: 1, overflow: 1, frame: 1, href: 1, src: 1, part: 1, edited: 1 };
+  var SKIP = { "if": 1, vary: 1, module: 1, cls: 1, img: 1, layout: 1, tone: 1, image: 1, icon: 1, focus: 1, fit: 1, mark: 1, overflow: 1, frame: 1, href: 1, src: 1, part: 1, edited: 1 };
   var NAMES = {
     label: "교안 목록 이름", group: "구간 이름(이 장부터)", kicker: "작은 글(왼쪽 위)", title: "제목", subtitle: "부제", sub: "아랫글",
     text: "본문", lead: "앞말", foot: "아래 결론 줄", caption: "그림 설명", alt: "그림 대신 읽는 글", by: "말한 사람 · 출처", quote: "인용",

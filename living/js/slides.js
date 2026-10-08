@@ -329,7 +329,7 @@
   L.cards = function (s, d) {
     title(s, d);
     var row = el("div", "stu cols-" + list(d.cards).length);
-    list(d.cards).forEach(function (c) { row.appendChild(el("div", "stu-card", [icon(c.icon, "stu-ico"), R("p", "", c.text)])); });
+    list(d.cards).forEach(function (c) { row.appendChild(el("div", "stu-card" + (c.img ? " has-img" : ""), [c.img ? img(c.img, c.alt, "stu-img") : icon(c.icon, "stu-ico"), R("p", "", c.text)])); });
     s.appendChild(row);
     if (d.punch) s.appendChild(R("p", "stu-punch", d.punch));
   };
@@ -842,7 +842,19 @@
     if (make) make(sec, slide, index);
     else sec.appendChild(R("p", "unknown", "모르는 layout입니다: " + slide.layout + " (읽는법.md의 화면 유형 표를 보세요)"));
     if (slide.layout !== "cover" && slide.layout !== "end") chrome(sec, slide, index);
+    (Array.isArray(slide.art) ? slide.art : slide.art ? [slide.art] : []).forEach(function (a) { sec.appendChild(art(a)); });
     return sec;
+  }
+  /* 선택: 그림 얹기(art). 어느 화면 유형에나 {src, alt, x, y, w, h}(1280 × 720 기준 px)로 그림을 둡니다. 여럿이면 목록으로.
+     점검은 이 자리를 칸으로 보고, 글자가 걸치면 알려 줍니다. */
+  function art(a) {
+    var box = el("figure", "art" + (a.cls ? " " + a.cls : ""));
+    box.style.left = (a.x || 0) + "px";
+    box.style.top = (a.y || 0) + "px";
+    box.style.width = (a.w || 240) + "px";
+    box.style.height = (a.h || 240) + "px";
+    box.appendChild(img(a.src, a.alt));
+    return box;
   }
 
   window.LectureSlides = { buildSlide: buildSlide, slideLabel: slideLabel, layouts: Object.keys(L) };

@@ -205,6 +205,9 @@ body.shot .viewport { box-shadow: none; }
 .stu-card { min-height: 206px; padding: 30px 28px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); }
 .stu-ico { width: 54px; height: 54px; color: var(--accent); }
 .stu-card p { margin-top: 26px !important; font-size: 28px; font-weight: 700; line-height: 1.34; letter-spacing: -.04em; }
+.stu-img { display: block; height: 116px; width: auto; max-width: 100%; margin: -8px 0 0 -6px; }
+.stu-card.has-img { padding-top: 22px; }
+.stu-card.has-img p { margin-top: 14px !important; }
 .stu-punch { position: absolute; left: 80px; right: 80px; top: 450px; font-size: 42px; font-weight: 700; line-height: 1.42; letter-spacing: -.045em; }
 
 /* ── marks · 표시가 붙은 칸 + 큰 숫자 ── */
@@ -666,3 +669,7 @@ body.shot .viewport { box-shadow: none; }
 .layout-points .title { width: 370px; right: auto; top: 154px; font-size: 48px; line-height: 1.2; }
 .layout-points .subtitle { left: 80px; right: auto; top: 330px; width: 360px; font-size: 23px; }
 .pt.numbered li p { grid-column: 2; }
+
+/* ── art · 어느 화면에나 얹는 그림(선택) ── */
+.art { position: absolute; margin: 0; pointer-events: none; }
+.art img { display: block; width: 100%; height: 100%; object-fit: contain; }

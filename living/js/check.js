@@ -35,6 +35,7 @@
   var NOT_BOX = ".paper, .an-badge, .ex-mark, .caret, .slide";
   function boxRect(node) {
     if (node instanceof SVGElement || node.matches(NOT_BOX)) return null;
+    if (node.classList.contains("art")) return node.getBoundingClientRect(); // 얹은 그림 자리는 칸으로 봅니다
     var cs = getComputedStyle(node);
     if (cs.display === "none" || cs.visibility === "hidden") return null;
     var bg = cs.backgroundColor;
