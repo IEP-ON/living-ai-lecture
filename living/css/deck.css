@@ -722,6 +722,10 @@ body.shot .viewport { box-shadow: none; }
 .wn-row.mode-pair .wn-top span { font-size: 15px; font-weight: 700; }
 .wn-row.mode-pair .wn-cap { font-size: 15px; }
 
+/* ── board · 화면을 채우는 판서 그림 ── */
+.bd-img { position: absolute; inset: 0; margin: 0; pointer-events: none; }
+.bd-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
 /* ── art · 어느 화면에나 얹는 그림(선택) ── */
 .art { position: absolute; margin: 0; pointer-events: none; }
 .art img { display: block; width: 100%; height: 100%; object-fit: contain; }

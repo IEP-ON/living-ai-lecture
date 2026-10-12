@@ -928,6 +928,12 @@
     foot(s, d);
   };
 
+  /* 판서 그림: 화면을 꽉 채우는 그림 한 장 위에 제목만 얹습니다. image · alt · title */
+  L.board = function (s, d) {
+    s.appendChild(el("figure", "bd-img", [img(d.image, d.alt)]));
+    title(s, d);
+  };
+
   function buildSlide(slide, index) {
     var sec = document.createElement("section");
     var theme = slide.theme || (window.DECK && DECK.theme);
