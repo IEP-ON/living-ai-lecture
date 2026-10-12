@@ -158,7 +158,7 @@
     var grid = el("div", "pf-grid");
     list(d.items).forEach(function (it, i) { grid.appendChild(el("div", "pf-card", [R("b", "pf-index", pad(i + 1)), R("strong", "", it.title), it.text ? R("p", "", it.text) : null])); });
     s.appendChild(grid);
-    if (d.highlight) s.appendChild(el("div", "pf-hl", [R("strong", "", d.highlight.title), R("p", "", d.highlight.text)]));
+    if (d.highlight) s.appendChild(el("div", "pf-hl", [el("div", "pf-hl-head", [R("strong", "", d.highlight.title), d.highlight.logo ? img(d.highlight.logo, d.highlight.logoAlt || "", "pf-logo") : null]), R("p", "", d.highlight.text)]));
   };
 
   /* 주제 갈피(어두운 화면) + 선택: 연표 */

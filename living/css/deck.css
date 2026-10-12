@@ -85,7 +85,9 @@ body.shot .viewport { box-shadow: none; }
 .pf-card { position: relative; min-height: 96px; padding: 18px 0 18px 52px; border-top: 1px solid var(--line); }
 .pf-card strong { display: block; font-size: 28px; font-weight: 700; letter-spacing: -.04em; }
 .pf-card p { margin-top: 6px !important; font-size: 19px; line-height: 1.42; color: var(--muted); }
-.pf-hl { position: absolute; left: 80px; width: 430px; top: 486px; display: flex; flex-direction: column; gap: 6px; padding: 20px 26px; border-radius: 4px; background: var(--forest); color: #fff; }
+.pf-hl { position: absolute; left: 80px; width: 430px; top: 480px; display: flex; flex-direction: column; gap: 4px; padding: 16px 26px 18px; border-radius: 4px; background: var(--forest); color: #fff; }
+.pf-hl-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.pf-logo { display: block; height: 52px; width: auto; padding: 6px 12px; border-radius: 12px; background: #fff; }
 .pf-hl strong { font-size: 30px; font-weight: 700; letter-spacing: -.03em; white-space: nowrap; }
 .pf-hl p { text-wrap: balance; font-size: 20px; line-height: 1.4; color: #CBDFE0; }
 .pf-index { position: absolute; left: 0; top: 22px; font-size: 17px; font-weight: 500; color: var(--accent); }

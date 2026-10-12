@@ -127,7 +127,9 @@ window.DECK = {
         }
       ],
       "highlight": {
-        "title": "LivingAI",
+        "logo": "brand/dgtp-seic.png",
+          "logoAlt": "대구테크노파크 · SEIC사업단",
+          "title": "LivingAI",
         "text": "테크노파크 · 서경대학교 주관 연수모델 개발로 만든 연수용 에이전트 AI"
       },
       "note": {
