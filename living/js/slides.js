@@ -932,6 +932,7 @@
   L.board = function (s, d) {
     s.appendChild(el("figure", "bd-img", [img(d.image, d.alt)]));
     title(s, d);
+    foot(s, d);
   };
 
   function buildSlide(slide, index) {
