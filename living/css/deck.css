@@ -673,6 +673,55 @@ body.shot .viewport { box-shadow: none; }
 .layout-points .subtitle { left: 80px; right: auto; top: 330px; width: 360px; font-size: 23px; }
 .pt.numbered li p { grid-column: 2; }
 
+/* ── windows · 창 그림(등식 · 견주기) ── */
+.wn-row { position: absolute; left: 80px; right: 80px; top: 188px; display: flex; align-items: flex-start; gap: 12px; }
+.wn-item { flex: 1 1 0; min-width: 0; text-align: center; }
+.wn-item.wide { flex: 2.3 1 0; }
+.wn-op { flex: none; width: 34px; margin-top: 76px; text-align: center; font-size: 46px; font-weight: 800; line-height: 1; color: var(--accent); }
+.wn-win { height: 206px; border: 3px solid var(--ink); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 5px 5px 0 var(--ink); text-align: left; }
+.wn-top { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; background: var(--ink); }
+.wn-top i { width: 8px; height: 8px; border-radius: 50%; background: #63848A; }
+.wn-top span { margin-left: 6px; font-size: 13px; font-weight: 600; color: var(--night-ink); white-space: nowrap; }
+.wn-body { display: grid; grid-template-rows: minmax(0, 1fr); height: calc(100% - 26px); }
+.wn-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; padding: 12px 12px 11px; border-left: 2px solid var(--ink); }
+.wn-pane:first-child { border-left: 0; }
+.wn-pane.k-files, .wn-pane.k-chat { background: var(--paper); }
+.wn-pane.hot { background: var(--warning-paper); box-shadow: inset 0 0 0 3px var(--signal); }
+.wn-cap { margin-bottom: 8px !important; font-size: 13px; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; color: var(--ink); }
+.wn-l { display: block; flex: none; height: 9px; margin: 7px 0; border-radius: 4px; background: var(--line); }
+.wn-l.c1 { background: var(--accent); }
+.wn-l.c2 { background: var(--signal); }
+.wn-l.strong { width: 62%; height: 10px; background: var(--ink); }
+.wn-f, .wn-ck { display: flex; align-items: center; gap: 5px; margin: 5px 0 !important; }
+.wn-f.sub { padding-left: 11px; }
+.wn-f i, .wn-ck i { display: block; flex: none; height: 7px; border-radius: 4px; background: var(--line); }
+.wn-ck i { width: 62%; }
+.wn-ico { flex: none; width: 15px; height: 15px; color: var(--accent); }
+.wn-url { display: flex; align-items: center; gap: 6px; flex: none; height: 20px; padding: 0 8px; border: 2px solid var(--ink); border-radius: 999px; }
+.wn-url b { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); }
+.wn-url i { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
+.wn-page { flex: 1; margin-top: 8px; padding: 8px 9px; border-radius: 8px; background: var(--soft); }
+.wn-page .wn-l { background: #fff; }
+.wn-page .wn-l:first-child { width: 58%; }
+.wn-card { padding: 9px 10px 8px; border: 2.5px solid var(--ink); border-radius: 10px; background: #fff; }
+.wn-b { display: block; flex: none; height: 18px; margin-bottom: 7px; border-radius: 8px; }
+.wn-b.me { width: 62%; margin-left: auto; background: var(--soft); }
+.wn-b.ai { width: 84%; border: 2px solid var(--ink); background: #fff; }
+.wn-in { display: block; flex: none; height: 20px; margin-top: auto; border: 2px solid var(--ink); border-radius: 8px; background: #fff; }
+.wn-pic { display: flex; align-items: center; justify-content: center; height: 206px; }
+.wn-pic img { display: block; max-width: 100%; max-height: 176px; }
+.wn-name { margin-top: 22px !important; font-size: 28px; font-weight: 800; letter-spacing: -.045em; line-height: 1.2; }
+.wn-note { margin-top: 7px !important; font-size: 20px; line-height: 1.4; color: var(--muted); }
+.wn-list { margin: 24px 0 0; padding: 0; list-style: none; text-align: left; }
+.wn-list li:first-child { border-top: 0; }
+.wn-list li { position: relative; padding: 11px 0 11px 30px; border-top: 2px dashed rgba(18, 55, 70, .2); font-size: 23px; font-weight: 600; line-height: 1.35; letter-spacing: -.03em; }
+.wn-list li::before { content: ""; position: absolute; left: 4px; top: 21px; width: 12px; height: 12px; border: 2.5px solid var(--ink); border-radius: 50%; background: var(--soft); }
+.wn-row.mode-pair { gap: 44px; }
+.wn-row.mode-pair .wn-win { height: 196px; }
+.wn-row.mode-pair .wn-name { display: none; }
+.wn-row.mode-pair .wn-top span { font-size: 15px; font-weight: 700; }
+.wn-row.mode-pair .wn-cap { font-size: 15px; }
+
 /* ── art · 어느 화면에나 얹는 그림(선택) ── */
 .art { position: absolute; margin: 0; pointer-events: none; }
 .art img { display: block; width: 100%; height: 100%; object-fit: contain; }

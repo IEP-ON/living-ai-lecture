@@ -892,6 +892,41 @@
     s.appendChild(wrap);
     foot(s, d);
   };
+  /* 창 그림: 작은 창과 그림을 +, = 같은 기호로 잇거나 나란히 견줍니다.
+     row[{app, panes[{kind(files · text · web · code · guide · chat), cap}], hot(강조할 칸 번호), wide, name, note, list[]} | {img, alt, name, note} | {op}] */
+  var PANE = {
+    files: function () { return [["folder", 70], ["file", 80], ["file", 60], ["folder", 50], ["file", 74]].map(function (f) { var bar = el("i"); bar.style.width = f[1] + "%"; return el("p", "wn-f" + (f[0] === "file" ? " sub" : ""), [icon(f[0], "wn-ico"), bar]); }); },
+    text: function () { return [90, 70, 82, 44, 64].map(function (w) { var l = el("i", "wn-l"); l.style.width = w + "%"; return l; }); },
+    web: function () { return [el("div", "wn-url", [el("b"), el("i")]), el("div", "wn-page", [el("i", "wn-l"), el("i", "wn-l")])]; },
+    code: function () { return [[0, 46, "c1"], [14, 62, ""], [14, 50, "c2"], [28, 40, ""], [0, 30, "c1"]].map(function (c) { var l = el("i", "wn-l " + c[2]); l.style.marginLeft = c[0] + "%"; l.style.width = c[1] + "%"; return l; }); },
+    guide: function () { return [el("div", "wn-card", [el("i", "wn-l strong"), el("p", "wn-ck", [icon("check", "wn-ico"), el("i")]), el("p", "wn-ck", [icon("check", "wn-ico"), el("i")])])]; },
+    chat: function () { return [el("i", "wn-b me"), el("i", "wn-b ai"), el("i", "wn-in")]; }
+  };
+  function miniWin(w) {
+    var panes = list(w.panes), body = el("div", "wn-body");
+    body.style.gridTemplateColumns = panes.length < 2 ? "1fr" : panes.map(function (p) { return p.kind === "files" ? ".72fr" : p.kind === "chat" ? "1fr" : "1.3fr"; }).join(" ");
+    panes.forEach(function (p, i) {
+      var pane = el("div", "wn-pane k-" + p.kind + (w.hot === i + 1 ? " hot" : ""), [p.cap ? R("p", "wn-cap", p.cap) : null]);
+      (PANE[p.kind] || PANE.text)().forEach(function (n) { pane.appendChild(n); });
+      body.appendChild(pane);
+    });
+    return el("div", "wn-win", [el("div", "wn-top", [el("i"), el("i"), el("i"), w.app ? R("span", "", w.app) : null]), body]);
+  }
+  L.windows = function (s, d) {
+    title(s, d);
+    subtitle(s, d);
+    var row = el("div", "wn-row" + (d.mode ? " mode-" + d.mode : ""));
+    list(d.row).forEach(function (it) {
+      if (it.op) { row.appendChild(R("span", "wn-op", it.op)); return; }
+      var item = el("div", "wn-item" + (it.wide ? " wide" : ""), [it.img ? el("div", "wn-pic", [img(it.img, it.alt)]) : miniWin(it)]);
+      if (it.name) item.appendChild(R("p", "wn-name", it.name));
+      if (it.note) item.appendChild(R("p", "wn-note", it.note));
+      if (it.list) item.appendChild(el("ul", "wn-list", list(it.list).map(function (t) { return R("li", "", t); })));
+      row.appendChild(item);
+    });
+    s.appendChild(row);
+    foot(s, d);
+  };
 
   function buildSlide(slide, index) {
     var sec = document.createElement("section");
