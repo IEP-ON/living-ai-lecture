@@ -72,7 +72,7 @@
       <div class="pick">
         <h3>자주 쓰는 순서</h3>
         <div class="presets" id="presets">
-          <button type="button" class="preset" data-set="intro,s1"><b>1회차</b><span>개론 → 이미지 · 수업설계</span></button>
+          <button type="button" class="preset" data-set="intro,s1,end"><b>1회차</b><span>개론 → 이미지 · 수업설계 → 마무리</span></button>
           <button type="button" class="preset" data-set="recap,s2,end"><b>2회차 · 이어서</b><span>돌아보기 → 행정 · 바이브코딩 → 마무리</span></button>
           <button type="button" class="preset" data-set="brief,s2,end"><b>2회차 · 섞인 날</b><span>짧은 개론 → 행정 · 바이브코딩 → 마무리</span></button>
           <button type="button" class="preset" data-set="intro,s2,end"><b>2회차만 하는 날</b><span>개론 → 행정 · 바이브코딩 → 마무리</span></button>
@@ -85,16 +85,16 @@
       </div>
 
       <p class="part" id="part">1회차</p>
-      <h2 id="session-title">개론 → 1회기</h2>
+      <h2 id="session-title">개론 → 1회기 → 마무리</h2>
       <p class="what" id="what">내 화면에는 대본을, 청중 화면에는 슬라이드를 띄우세요.</p>
       <div class="go primary">
-        <a class="main" id="go-prompter" href="living/교안.html?set=intro,s1&amp;prompter=1">프롬프터</a>
-        <a id="go-tv" href="living/index.html?set=intro,s1&amp;tv=1">노트북·TV 화면</a>
+        <a class="main" id="go-prompter" href="living/교안.html?set=intro,s1,end&amp;prompter=1">프롬프터</a>
+        <a id="go-tv" href="living/index.html?set=intro,s1,end&amp;tv=1">노트북·TV 화면</a>
       </div>
       <div class="go">
-        <a id="go-guide" href="living/교안.html?set=intro,s1">교안 열기</a>
-        <a id="go-slides" href="living/index.html?set=intro,s1">발표 화면만</a>
-        <a id="go-waits" href="living/기다릴때.html?set=intro,s1">기다릴 때 카드</a>
+        <a id="go-guide" href="living/교안.html?set=intro,s1,end">교안 열기</a>
+        <a id="go-slides" href="living/index.html?set=intro,s1,end">발표 화면만</a>
+        <a id="go-waits" href="living/기다릴때.html?set=intro,s1,end">기다릴 때 카드</a>
       </div>
       <p class="hint">기다릴 때 카드는 프롬프터 안에서도 열 수 있습니다. 카드를 읽는 동안 TV에는 현재 슬라이드가 유지됩니다.</p>
     </section>
@@ -210,7 +210,7 @@
 
     var fromUrl = "";
     try { fromUrl = new URLSearchParams(location.search).get("set") || ""; } catch (err) { fromUrl = ""; }
-    current = C.normalize(fromUrl || load() || "intro,s1");
+    current = C.normalize(fromUrl || load() || "intro,s1,end");
     if (!current.length) current = ["intro", "s1"];
     render();
   })();

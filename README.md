@@ -6,7 +6,7 @@
 
 | 바로가기 | 순서 | 주소 |
 | --- | --- | --- |
-| 1회차 | 개론 → 1회기 | `living/교안.html?set=intro,s1` |
+| 1회차 | 개론 → 1회기 → 마무리 | `living/교안.html?set=intro,s1,end` |
 | 2회차 · 이어서 | 돌아보기 → 2회기 → 마무리 | `living/교안.html?set=recap,s2,end` |
 | 2회차 · 섞인 날 | 짧은 개론 → 2회기 → 마무리 | `living/교안.html?set=brief,s2,end` |
 | 2회차만 하는 날 | 개론 → 2회기 → 마무리 | `living/교안.html?set=intro,s2,end` |
