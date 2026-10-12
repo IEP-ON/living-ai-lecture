@@ -77,18 +77,18 @@ body.shot .viewport { box-shadow: none; }
 .cv-mark .line::after { content: ""; position: absolute; right: -2px; top: -4px; width: 9px; height: 9px; border-radius: 50%; background: var(--signal); }
 
 /* ── profile · 자기소개 ── */
-.pf-left { position: absolute; left: 80px; top: 150px; width: 430px; }
+.pf-left { position: absolute; left: 80px; top: 120px; width: 430px; }
 .pf-name { font-size: 116px; font-weight: 700; line-height: 1; letter-spacing: -.065em; }
 .pf-role { margin-top: 22px !important; font-size: 28px; font-weight: 600; color: var(--muted); }
 .pf-line { margin-top: 48px !important; padding-left: 18px; border-left: 5px solid var(--signal); font-size: 30px; font-weight: 700; line-height: 1.42; letter-spacing: -.035em; }
-.pf-grid { position: absolute; left: 560px; right: 80px; top: 126px; display: grid; grid-template-columns: 1fr; gap: 0; }
-.pf-card { position: relative; min-height: 88px; padding: 16px 0 16px 48px; border-top: 1px solid var(--line); }
-.pf-card strong { display: block; font-size: 27px; font-weight: 700; letter-spacing: -.04em; }
-.pf-card p { margin-top: 6px !important; font-size: 18px; line-height: 1.4; color: var(--muted); }
-.pf-hl { position: absolute; left: 560px; right: 80px; top: 538px; display: flex; align-items: baseline; gap: 22px; padding: 20px 24px; border-radius: 4px; background: var(--forest); color: #fff; }
-.pf-hl strong { font-size: 25px; font-weight: 700; letter-spacing: -.03em; white-space: nowrap; }
-.pf-hl p { font-size: 19px; line-height: 1.4; color: #CBDFE0; }
-.pf-index { position: absolute; left: 0; top: 20px; font-size: 17px; font-weight: 500; color: var(--accent); }
+.pf-grid { position: absolute; left: 560px; right: 80px; top: 100px; display: grid; grid-template-columns: 1fr; gap: 0; }
+.pf-card { position: relative; min-height: 96px; padding: 18px 0 18px 52px; border-top: 1px solid var(--line); }
+.pf-card strong { display: block; font-size: 28px; font-weight: 700; letter-spacing: -.04em; }
+.pf-card p { margin-top: 6px !important; font-size: 19px; line-height: 1.42; color: var(--muted); }
+.pf-hl { position: absolute; left: 80px; width: 430px; top: 486px; display: flex; flex-direction: column; gap: 6px; padding: 20px 26px; border-radius: 4px; background: var(--forest); color: #fff; }
+.pf-hl strong { font-size: 30px; font-weight: 700; letter-spacing: -.03em; white-space: nowrap; }
+.pf-hl p { text-wrap: balance; font-size: 20px; line-height: 1.4; color: #CBDFE0; }
+.pf-index { position: absolute; left: 0; top: 22px; font-size: 17px; font-weight: 500; color: var(--accent); }
 
 /* ── statement · 큰 문장 ── */
 .st { position: absolute; left: 80px; right: 80px; top: 50%; transform: translateY(-48%); }
