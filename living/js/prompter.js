@@ -13,15 +13,9 @@
   let prefs = {};
   try { prefs = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (_) { /* 저장이 막혀 있어도 사용할 수 있습니다. */ }
   let fontSize = clamp(prefs.fontSize, 24, 64, 40);
-  let speed = clamp(prefs.speed, 6, 72, 22);
-  let showPreview = prefs.preview === true;
   let gesturesEnabled = prefs.gestures !== false;
   let settingsOpen = false;
   let active = false;
-  let running = false;
-  let frame = 0;
-  let lastTime = null;
-  let scrollPosition = 0;
   let renderedIndex = -1;
   let priorFocus = null;
   let priorScroll = 0;
@@ -49,7 +43,7 @@
     return node;
   }
   function save() {
-    try { localStorage.setItem(STORE, JSON.stringify({ fontSize: fontSize, speed: speed, preview: showPreview, gestures: gesturesEnabled })); } catch (_) { /* 선택한 값은 이번 창에서 유지합니다. */ }
+    try { localStorage.setItem(STORE, JSON.stringify({ fontSize: fontSize, gestures: gesturesEnabled })); } catch (_) { /* 선택한 값은 이번 창에서 유지합니다. */ }
   }
 
   const toggle = button("프롬프터", "quiet", function () { setActive(true); });
@@ -72,7 +66,7 @@
   const count = el("span", "prompter-count");
   count.setAttribute("aria-live", "polite");
   const heading = el("div", "prompter-heading");
-  heading.append(count, title, tvStatus);
+  heading.append(count, title);
   identity.append(heading);
   const navigation = el("nav", "prompter-nav");
   navigation.setAttribute("aria-label", "발표 장 이동");
@@ -90,16 +84,7 @@
   fontValue.setAttribute("aria-label", "현재 글자 크기");
   const larger = button("가+", "prompter-button prompter-font-button", function () { changeFont(2); }, "글자 크게");
   fontControls.append(smaller, fontValue, larger);
-  const previewToggle = button("화면 미리보기", "prompter-button", function () {
-    pause();
-    showPreview = !showPreview;
-    applyPreferences();
-    fitPreview();
-    save();
-  });
-  previewToggle.setAttribute("aria-controls", "prompter-preview");
   const tv = button("TV 연결", "prompter-button", function () {
-    pause();
     if (window.LectureRemote && typeof LectureRemote.openPanel === "function") LectureRemote.openPanel();
     else status.textContent = "TV 연결 기능을 불러오지 못했습니다. 교안을 새로 열어 주세요.";
   });
@@ -108,7 +93,12 @@
   waitsToggle.hidden = !waits.length;
   waitsToggle.setAttribute("aria-haspopup", "dialog");
   waitsToggle.setAttribute("aria-controls", "prompter-waits");
-  toolbar.append(fontControls, previewToggle, tv, exit);
+  const settingsWaits = button("대기 카드 " + waits.length, "prompter-button prompter-settings-waits", openCards, "기다릴 때 카드 열기");
+  settingsWaits.hidden = !waits.length;
+  settingsWaits.setAttribute("aria-haspopup", "dialog");
+  settingsWaits.setAttribute("aria-controls", "prompter-waits");
+  waitsToggle.classList.add("prompter-head-waits");
+  toolbar.append(fontControls, settingsWaits, tv, tvStatus, exit);
 
   const viewport = el("div", "prompter-viewport");
   viewport.tabIndex = 0;
@@ -123,43 +113,16 @@
   const reminderBody = el("div", "prompter-reminder-body");
   reminders.append(summary, reminderBody);
   speech.append(script, reminders);
-  const preview = el("aside", "prompter-preview");
-  preview.id = "prompter-preview";
-  preview.setAttribute("aria-hidden", "true");
-  const previewBox = el("div", "prompter-preview-box");
-  const previewCanvas = el("div", "prompter-preview-canvas");
-  previewBox.appendChild(previewCanvas);
-  preview.append(el("p", "prompter-preview-label", "청중 화면"), previewBox);
-  reading.append(speech, preview);
+  reading.appendChild(speech);
   viewport.appendChild(reading);
 
-  const footer = el("footer", "prompter-footer");
-  const scrollButton = button("스크롤", "prompter-button prompter-scroll-button", function () {
-    if (running) pause(); else start();
-  }, "자동 스크롤");
-  scrollButton.setAttribute("aria-pressed", "false");
-  const speedControl = el("label", "prompter-speed");
-  const speedLabel = el("span", "", "속도");
-  const speedInput = el("input");
-  speedInput.type = "range";
-  speedInput.min = "6";
-  speedInput.max = "72";
-  speedInput.step = "2";
-  speedInput.setAttribute("aria-label", "자동 스크롤 속도");
-  speedInput.addEventListener("input", function () {
-    speed = Number(speedInput.value);
-    speedInput.setAttribute("aria-valuetext", speed + " 픽셀/초");
-    save();
-  });
-  speedControl.append(speedLabel, speedInput);
-  const status = el("p", "prompter-status", "다음 장은 직접 넘겨 주세요");
+  const status = el("p", "prompter-status");
   status.setAttribute("role", "status");
-  footer.append(speedControl, status);
   const settingsToggle = button("설정", "prompter-button prompter-settings-toggle", function () { setSettings(!settingsOpen); });
   settingsToggle.setAttribute("aria-controls", "prompter-settings");
   settingsToggle.setAttribute("aria-expanded", "false");
   const headerActions = el("div", "prompter-head-actions");
-  headerActions.append(waitsToggle, scrollButton, settingsToggle);
+  headerActions.append(waitsToggle, settingsToggle);
   header.insertBefore(headerActions, navigation);
   const settings = el("section", "prompter-settings");
   settings.id = "prompter-settings";
@@ -176,7 +139,7 @@
   });
   gestureLabel.append(gestureToggle, el("span", "", "대본에서 손짓으로 장 넘기기"));
   const gestureHelp = el("p", "prompter-gesture-help", "한 손가락으로 왼쪽으로 밀면 다음 장, 오른쪽으로 밀면 이전 장입니다. 대본의 오른쪽 가장자리를 두 번 톡 하면 다음, 왼쪽 가장자리는 이전입니다. 가운데 두 번 톡과 두 손가락 확대는 장을 넘기지 않습니다. 세로로 움직이면 대본만 스크롤됩니다. 카드에서는 장 넘김이 작동하지 않습니다.");
-  settings.append(toolbar, footer, gestureLabel, gestureHelp);
+  settings.append(toolbar, status, gestureLabel, gestureHelp);
   const feedback = el("p", "prompter-feedback");
   feedback.setAttribute("role", "status");
   feedback.setAttribute("aria-live", "polite");
@@ -234,17 +197,15 @@
   const cardsFoot = el("footer", "prompter-waits-foot");
   const cardSmaller = button("가−", "prompter-button prompter-font-button", function () { changeFont(-2); }, "카드 글자 작게");
   const cardLarger = button("가+", "prompter-button prompter-font-button", function () { changeFont(2); }, "카드 글자 크게");
-  const cardScrollButton = button("자동 스크롤", "prompter-button", function () { if (running) pause(); else start(); });
-  cardScrollButton.setAttribute("aria-pressed", "false");
   const cardsCount = el("p", "prompter-waits-count");
   cardsCount.setAttribute("role", "status");
-  cardsFoot.append(cardSmaller, cardLarger, cardScrollButton, cardsCount);
+  cardsFoot.append(cardSmaller, cardLarger, cardsCount);
   cardsDialog.append(cardsHead, filters, cardsBody, cardsFoot);
   document.body.appendChild(cardsDialog);
   cardsDialog.addEventListener("cancel", function (event) { event.preventDefault(); closeCards(); });
   cardsDialog.addEventListener("close", function () {
-    pause("대본으로 돌아왔습니다. 읽던 곳에서 다시 시작할 수 있습니다");
     waitsToggle.setAttribute("aria-expanded", "false");
+    settingsWaits.setAttribute("aria-expanded", "false");
     if (active && cardReturnFocus && cardReturnFocus.isConnected) cardReturnFocus.focus({ preventScroll: true });
   });
 
@@ -262,24 +223,24 @@
   }
   function openCards() {
     if (!active || !waits.length || cardsDialog.open) return;
-    pause("대기 카드를 열어 대본 자동 스크롤을 멈췄습니다");
+
     resetGesture();
+    cardReturnFocus = settings.contains(document.activeElement) ? settingsToggle : document.activeElement;
     setSettings(false);
-    cardReturnFocus = document.activeElement;
     cardsContext.textContent = "청중 화면은 " + (LectureGuide.index + 1) + "장에 그대로 · " + title.textContent;
     drawCards();
     cardsDialog.showModal();
     showSelectedCard();
     waitsToggle.setAttribute("aria-expanded", "true");
+    settingsWaits.setAttribute("aria-expanded", "true");
     cardsClose.focus({ preventScroll: true });
   }
   function closeCards() {
     if (!cardsDialog.open) return;
-    pause();
+
     cardsDialog.close();
   }
   function drawCards() {
-    pause();
     const part = cardsPart.value === "current" ? currentWaitPart() : Number(cardsPart.value);
     const words = cardsSearch.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     const shown = [];
@@ -307,7 +268,6 @@
     }
     else {
       cardsReading.replaceChildren(el("p", "prompter-waits-empty", "조건에 맞는 카드가 없습니다. 모듈·길이·검색어를 바꿔 보세요."));
-      cardScrollButton.disabled = true;
     }
   }
   function showSelectedCard() {
@@ -315,11 +275,10 @@
     if (selected) selected.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
   function selectCard(index) {
-    pause();
     const changed = cardIndex !== index;
     cardIndex = index;
     cardsList.querySelectorAll("button").forEach(function (item) { item.setAttribute("aria-current", String(Number(item.dataset.cardIndex) === index)); });
-    cardScrollButton.disabled = false;
+
     if (!changed && cardsReading.querySelector("article")) return;
     const card = waits[index];
     const article = el("article");
@@ -336,11 +295,9 @@
     cardsReading.replaceChildren(article);
     cardsReading.scrollTop = 0;
   }
-  function scrollSurface() { return cardsDialog.open ? cardsReading : viewport; }
 
   function setSettings(on) {
     if (settingsOpen === on) return;
-    if (on) pause("설정을 열어 자동 스크롤을 멈췄습니다");
     resetGesture();
     settingsOpen = on;
     settings.hidden = !on;
@@ -360,7 +317,7 @@
       Boolean(document.querySelector('dialog[open], [aria-modal="true"]:not([hidden])')) ||
       Boolean(window.visualViewport && Math.abs(window.visualViewport.scale - 1) > .01) ||
       Boolean(String(window.getSelection() || "")) ||
-      Boolean(target && target.closest('button, a, input, select, textarea, summary, [contenteditable]:not([contenteditable="false"]), .prompter-preview, .prompter-reminders'));
+      Boolean(target && target.closest('button, a, input, select, textarea, summary, [contenteditable]:not([contenteditable="false"]), .prompter-reminders'));
   }
   function gestureGo(direction) {
     resetGesture();
@@ -431,21 +388,11 @@
     larger.disabled = fontSize >= 64;
     cardSmaller.disabled = fontSize <= 24;
     cardLarger.disabled = fontSize >= 64;
-    preview.hidden = !showPreview;
-    root.classList.toggle("has-preview", showPreview);
-    previewToggle.setAttribute("aria-pressed", String(showPreview));
-    speedInput.value = String(speed);
-    speedInput.setAttribute("aria-valuetext", speed + " 픽셀/초");
   }
   function changeFont(delta) {
-    pause();
     fontSize = clamp(fontSize + delta, 24, 64, 40);
     applyPreferences();
     save();
-  }
-  function fitPreview() {
-    if (!active || !showPreview) return;
-    previewCanvas.style.transform = "scale(" + previewBox.clientWidth / 1280 + ")";
   }
   function fitViewport() {
     if (!active) return;
@@ -455,7 +402,6 @@
     root.style.setProperty("--prompter-height", height + "px");
     root.style.setProperty("--prompter-head-height", header.getBoundingClientRect().height + "px");
     cardsDialog.style.setProperty("--prompter-height", height + "px");
-    fitPreview();
   }
   function render() {
     if (!active) return;
@@ -464,7 +410,7 @@
     if (!slide) return;
     const changed = renderedIndex !== index;
     if (changed) { resetGesture(); setSettings(false); }
-    pause(changed ? "새 장입니다. 준비되면 자동 스크롤을 켜세요" : undefined);
+
     renderedIndex = index;
     title.textContent = LectureSlides.slideLabel(slide);
     count.textContent = (index + 1) + " / " + DECK.slides.length;
@@ -485,14 +431,11 @@
     reminders.hidden = !reminderBody.children.length;
     if (changed) reminders.open = false;
     if (changed && cardsDialog.open) closeCards();
-    previewCanvas.replaceChildren(LectureSlides.buildSlide(slide, index));
-    if (previewCanvas.firstElementChild) previewCanvas.firstElementChild.classList.add("is-on");
     if (changed) viewport.scrollTop = 0;
-    fitPreview();
   }
   function setActive(on) {
     if (active === on) return;
-    pause();
+
     resetGesture();
     active = on;
     root.hidden = !on;
@@ -532,69 +475,11 @@
     wakeLock = null;
     if (lock) lock.release().catch(function () {});
   }
-  function pause(message) {
-    const wasRunning = running;
-    running = false;
-    cancelAnimationFrame(frame);
-    frame = 0;
-    lastTime = null;
-    scrollButton.textContent = "스크롤";
-    scrollButton.setAttribute("aria-label", "자동 스크롤");
-    scrollButton.setAttribute("aria-pressed", "false");
-    cardScrollButton.textContent = "자동 스크롤";
-    cardScrollButton.setAttribute("aria-pressed", "false");
-    if (message) status.textContent = message;
-    else if (wasRunning) status.textContent = "일시정지 · 읽던 곳에서 다시 시작할 수 있습니다";
-  }
-  function start() {
-    if (!active || document.hidden || running) return;
-    const surface = scrollSurface();
-    if (surface.scrollTop >= surface.scrollHeight - surface.clientHeight - 1) {
-      status.textContent = "이 장의 끝입니다. 다음 장은 직접 넘겨 주세요";
-      return;
-    }
-    running = true;
-    lastTime = null;
-    scrollPosition = surface.scrollTop;
-    scrollButton.textContent = "멈춤";
-    scrollButton.setAttribute("aria-label", "자동 스크롤 일시정지");
-    scrollButton.setAttribute("aria-pressed", "true");
-    cardScrollButton.textContent = "일시정지";
-    cardScrollButton.setAttribute("aria-pressed", "true");
-    status.textContent = "자동 스크롤 중 · 직접 움직이면 멈춥니다";
-    frame = requestAnimationFrame(tick);
-  }
-  function tick(now) {
-    if (!running) return;
-    const surface = scrollSurface();
-    if (lastTime !== null) {
-      scrollPosition += speed * Math.min(now - lastTime, 80) / 1000;
-      surface.scrollTop = scrollPosition;
-    }
-    lastTime = now;
-    if (surface.scrollTop >= surface.scrollHeight - surface.clientHeight - 1) {
-      pause("이 장의 끝입니다. 다음 장은 직접 넘겨 주세요");
-      return;
-    }
-    frame = requestAnimationFrame(tick);
-  }
-
-  [viewport, cardsReading].forEach(function (surface) {
-    ["wheel", "touchstart", "pointerdown"].forEach(function (type) {
-      surface.addEventListener(type, function () { if (running) pause(); }, { passive: true });
-    });
-    surface.addEventListener("scroll", function () {
-      if (running && surface === scrollSurface() && Math.abs(surface.scrollTop - scrollPosition) > 3) pause();
-    }, { passive: true });
-    surface.addEventListener("keydown", function (event) {
-      if (["ArrowUp", "ArrowDown", " "].includes(event.key) && running) pause();
-    });
-  });
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
       resetGesture();
       touches.clear();
-      pause("다른 화면으로 이동해 자동 스크롤을 멈췄습니다");
+
       releaseWakeLock();
     } else if (active) requestWakeLock();
   });
@@ -614,16 +499,14 @@
     if (settingsOpen) { setSettings(false); settingsToggle.focus({ preventScroll: true }); return; }
     setActive(false);
   });
-  window.addEventListener("resize", function () { clearTouchState(); if (active) { pause(); fitViewport(); } });
-  if (window.visualViewport) window.visualViewport.addEventListener("resize", function () { clearTouchState(); if (active) { pause(); fitViewport(); } });
-  if (window.ResizeObserver) new ResizeObserver(fitPreview).observe(previewBox);
+  window.addEventListener("resize", function () { clearTouchState(); if (active) fitViewport(); });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", function () { clearTouchState(); if (active) fitViewport(); });
   LectureGuide.onPaint(render);
   applyPreferences();
   window.LecturePrompter = {
     get active() { return active; },
     open: function () { setActive(true); },
-    close: function () { setActive(false); },
-    pause: pause
+    close: function () { setActive(false); }
   };
   if (new URLSearchParams(location.search).get("prompter") === "1") setActive(true);
 })();
