@@ -2,7 +2,8 @@
   발표형 강의 슬라이드 엔진 v3 작업본 (1280 × 720)
   deck-data.js의 DECK.slides를 그립니다. 교안(guide.js)과 모아보기도 같은 buildSlide를 씁니다.
   화면 유형(layout)과 칸은 강의슬라이드_템플릿/읽는법.md의 표를 따릅니다.
-  이 파일과 css · 도구는 템플릿과 강의 폴더가 같은 내용입니다. 고치면 템플릿에도 똑같이 반영합니다.
+  2026-10-13: 2회차 전용 화면(파일 카드·다시 저장·실제 화면 비교·도구 그림)을 더했습니다.
+  이번 강의의 수정은 이 폴더에만 적용합니다. 템플릿 반영은 별도 작업입니다.
 */
 (function () {
   var SVGNS = "http://www.w3.org/2000/svg";
@@ -92,6 +93,7 @@
     sec.appendChild(img(own ? D.logo : "brand/dgtp-seic.png", D.logoAlt || (own ? "로고" : "DGTP · SEIC"), "logo"));
   }
   function chrome(sec, slide, index) {
+    if (slide.quiet) return;
     if (slide.layout === "cover" || slide.layout === "end") return;
     if (slide.layout !== "section") {
       var heading = el("header", "slide-header", [R("b", "header-brand", "LivingAI")]);
@@ -881,7 +883,7 @@
       var q = pts[i - 1], mx = (q[0] + p[0]) / 2;
       return acc + " C" + mx + " " + q[1] + " " + mx + " " + p[1] + " " + p[0] + " " + p[1];
     }, "");
-    var wrap = el("div", "map");
+    var wrap = el("div", "map" + (n === 6 ? " six-stops" : ""));
     wrap.appendChild(svg("svg", { class: "map-svg", viewBox: "0 0 " + W + " " + H, "aria-hidden": "true" }, [svg("path", { d: path, class: "map-bed" }), svg("path", { d: path, class: "map-line" })]));
     stops.forEach(function (st, i) {
       var stop = el("div", "map-stop" + (d.now === i + 1 ? " now" : ""), [R("b", "map-n", pad(i + 1)), R("p", "map-head", st.head), st.text ? R("p", "map-text", st.text) : null]);
@@ -935,10 +937,55 @@
     foot(s, d);
   };
 
+  /* 2회차: 확장자 카드. 제품 로고 대신 같은 파일 모양을 씁니다. */
+  L.filetypes = function (s, d) {
+    title(s, d);
+    s.appendChild(el("div", "ft-row", list(d.cards).map(function (c) {
+      return el("div", "ft-card", [icon("file", "ft-icon"), R("p", "ft-name", c.name), R("p", "ft-ext", c.ext)]);
+    })));
+    foot(s, d);
+  };
+  L.fileflow = function (s, d) {
+    title(s, d);
+    s.appendChild(el("div", "ff-row", [
+      el("div", "ff-file", [icon("file", "ff-icon"), R("p", "", d.from)]),
+      flowArrow("ff-arrow"), R("p", "ff-via", d.via), flowArrow("ff-arrow"),
+      el("div", "ff-file", [icon("file", "ff-icon"), R("p", "", d.to)])
+    ]));
+    if (d.strike) s.appendChild(R("p", "ff-strike", d.strike));
+    foot(s, d);
+  };
+  /* 실제 결과 화면: 이미지의 전체 비율을 보존하고, 설명은 바깥에 놓습니다. */
+  L.evidence = function (s, d) {
+    title(s, d);
+    var row = el("div", "ev-row" + (d.mode ? " ev-" + d.mode : ""));
+    list(d.panels).forEach(function (p) {
+      row.appendChild(el("figure", "ev-panel", [
+        p.label ? R("figcaption", "ev-label", p.label) : null,
+        p.image ? el("div", "ev-picture", [img(p.image, p.alt)]) : el("div", "ev-source", [icon("file", "ev-file"), R("strong", "ev-big", p.big), R("p", "ev-source-text", p.text)]),
+        p.note ? R("p", "ev-note", p.note) : null
+      ]));
+    });
+    if (d.materials) {
+      var material = el("div", "ev-materials", [R("p", "ev-label", d.materialsTitle)]);
+      list(d.materials).forEach(function (m) { material.appendChild(el("div", "ev-material", [m.image ? img(m.image, m.alt) : icon("file", "ev-mfile"), R("p", "", m.text)])); });
+      row.appendChild(material);
+    }
+    s.appendChild(row);
+    foot(s, d);
+  };
+  L.toolhands = function (s, d) {
+    title(s, d);
+    s.appendChild(el("figure", "th-picture", [img(d.image, d.alt)]));
+    s.appendChild(el("div", "th-lines", list(d.lines).map(function (t) { return R("p", "", t); })));
+    foot(s, d);
+  };
+
   function buildSlide(slide, index) {
     var sec = document.createElement("section");
     var theme = slide.theme || (window.DECK && DECK.theme);
     sec.className = "slide layout-" + slide.layout + (slide.tone === "dark" ? " is-dark" : "") + (slide.overflow ? " is-over" : "") + (theme ? " theme-" + theme : "");
+    if (slide.style) sec.classList.add(slide.style);
     sec.setAttribute("role", "group");
     sec.setAttribute("aria-roledescription", "슬라이드");
     sec.setAttribute("aria-label", (index + 1) + ". " + slideLabel(slide));

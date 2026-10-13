@@ -3,6 +3,68 @@
    테마는 조각에 theme: "sticker"를 적으면 그 조각의 장에만 붙습니다(.slide.theme-sticker). 다른 조각의 화면은 그대로입니다.
    장면 · 대화 · 지도 · 말풍선은 테마 없이도 쓸 수 있게 기본 모양을 따로 둡니다. 색은 css/base.css의 이름만 씁니다. */
 
+/* 2026-10-13 2회차 전용 화면. 기존 조각의 배치는 바꾸지 않습니다. */
+.six-stops .map-stop { width: 188px; }
+.six-stops .map-head { font-size: 26px; white-space: nowrap; }
+.ft-row { position:absolute; left:80px; right:80px; top:210px; display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+.ft-card { padding:28px 14px 32px; text-align:center; border:3px solid var(--ink); border-radius:24px; background:var(--card); box-shadow:6px 6px 0 var(--ink); }
+.ft-card:nth-child(even) { background:var(--soft); }
+.ft-icon { width:82px; height:96px; color:var(--ink); }
+.ft-name { font-size:24px; font-weight:700; margin-top:10px !important; }
+.ft-ext { font-size:48px; font-weight:800; margin-top:10px !important; }
+.ff-row { position:absolute; left:80px; right:80px; top:226px; display:grid; grid-template-columns:240px 48px 1fr 48px 240px; gap:16px; align-items:center; text-align:center; }
+.ff-file { padding:18px 10px; border:3px solid var(--ink); border-radius:24px; background:var(--card); box-shadow:6px 6px 0 var(--ink); font-size:27px; font-weight:800; }
+.ff-file:last-child { background:var(--soft); }
+.ff-icon { width:90px; height:105px; }
+.ff-arrow { width:48px; height:48px; }
+.ff-via { font-size:27px; font-weight:750; line-height:1.55; }
+.ff-strike { position:absolute; left:80px; right:80px; top:506px; text-align:center; text-decoration:line-through; text-decoration-thickness:3px; font-size:25px; color:var(--muted); }
+.ev-row { position:absolute; left:80px; right:80px; top:174px; height:408px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:minmax(0,1fr); gap:30px; }
+.ev-panel { margin:0; min-width:0; min-height:0; height:100%; display:flex; flex-direction:column; align-items:stretch; gap:10px; }
+.ev-label { font-size:23px; font-weight:800; text-align:center; min-height:30px; }
+.ev-picture { min-height:0; flex:1; display:flex; align-items:center; justify-content:center; }
+.ev-picture img { width:100%; height:100%; object-fit:contain; }
+.ev-note { text-align:center; font-size:19px; color:var(--muted); font-weight:650; }
+.ev-materials { display:flex; flex-direction:column; gap:12px; }
+.ev-materials .ev-label { text-align:left; margin-bottom:8px; }
+.ev-material { display:flex; align-items:center; min-height:68px; gap:18px; }
+.ev-material img { width:74px; height:64px; object-fit:contain; }
+.ev-material p { font-size:22px; font-weight:700; }
+.ev-mfile { width:60px; height:55px; margin:0 7px; }
+.ev-materials .ev-material:last-child { min-height:56px; }
+.ev-row.ev-materials { display:grid; grid-template-columns:1.32fr 1fr; gap:40px; }
+.ev-row.ev-source-result { grid-template-columns:.68fr 1.5fr; }
+.ev-source { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; border:3px solid var(--ink); border-radius:24px; background:var(--card); box-shadow:6px 6px 0 var(--ink); }
+.ev-file { width:66px; height:76px; }
+.ev-big { font-size:60px; font-weight:800; }
+.ev-source-text { font-size:23px; line-height:1.4; text-align:center; padding:0 20px; }
+.ev-bicycles { top:192px; height:384px; }
+.th-picture { position:absolute; left:0; right:0; top:0; height:720px; margin:0; pointer-events:none; }
+.th-picture img { width:100%; height:100%; object-fit:contain; }
+.layout-toolhands .title { z-index:2; }
+.ev-bicycles .ev-picture { overflow:hidden; }
+.ev-bicycles .ev-panel:last-child img { width:158%; height:158%; max-width:none; max-height:none; object-fit:contain; flex-shrink:0; }
+.ev-forms .ev-picture { overflow:hidden; }
+.ev-forms .ev-picture img { width:137%; height:137%; max-width:none; max-height:none; object-fit:contain; flex-shrink:0; }
+.session2-top-points .title { left:80px; right:80px; width:auto; top:100px; font-size:46px; }
+.session2-top-points .pt { left:80px; top:210px; bottom:154px; }
+.session2-top-points .pt li { grid-template-columns:360px 1fr; align-items:center; gap:30px; }
+.session2-top-points .pt li p { font-size:25px; }
+.session2-consequence .cmp { top:220px; }
+.session2-consequence .cmp-col { min-height:250px; display:flex; flex-direction:column; justify-content:center; }
+.session2-consequence .cmp-head { font-size:26px; align-self:flex-start; }
+.session2-consequence .cmp-flow li { font-size:40px; }
+.th-lines { position:absolute; left:100px; right:100px; top:540px; display:flex; justify-content:space-between; gap:30px; }
+.th-lines p { font-size:26px; font-weight:800; }
+.session2-wide-copy .cmp-col.has-ava { padding-right:32px !important; }
+.session2-wide-copy .cmp-head { margin-right:78px; }
+.session2-wide-copy .cmp-flow li { font-size:25px; }
+.session2-long-title .title { font-size:43px; }
+.session2-tasks .ov-steps li > span { font-size:28px; line-height:1.4; }
+.session2-tasks .ov-steps { top:182px; }
+.session2-tasks .ov-mods { top:545px; }
+.session2-tasks .ov-note { top:606px; }
+
 /* ── 말풍선(어느 테마에서나) ── */
 .bubble { position: absolute; margin: 0; padding: 18px 26px; border: 3px solid var(--ink); border-radius: 26px; background: var(--card); color: var(--ink); font-size: 30px; font-weight: 700; line-height: 1.36; letter-spacing: -.04em; box-shadow: 5px 5px 0 var(--ink); }
 .bubble.tone-soft { background: var(--soft); }
