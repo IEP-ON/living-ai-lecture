@@ -502,9 +502,15 @@
 .theme-sticker .pt li strong { font-weight: 800; }
 .theme-sticker .pt li p { color: var(--ink); opacity: .8; }
 
-/* 표지·마무리 로고: 로봇 스티커와 같은 흰 스티커 카드로 크게 (2026-10-14) */
-.theme-sticker.layout-cover .logo, .theme-sticker.layout-end .logo {
+/* 표지: 로고와 로봇을 오른쪽 영역 가운데에 크게 세운다 (2026-10-14) */
+.theme-sticker.layout-cover .logo {
+  top: 58px; right: 232px; height: 132px; padding: 18px 28px; border-radius: 26px;
+  background: #fff; transform: rotate(-3deg);
+  box-shadow: 0 0 0 5px rgba(255,255,255,.28), 0 12px 0 -2px rgba(0,0,0,.22), 0 22px 40px rgba(0,0,0,.28);
+}
+.theme-sticker.layout-cover .art { left: 690px !important; top: 196px !important; width: 460px !important; height: 446px !important; }
+.theme-sticker.layout-end .logo {
   top: 40px; right: 72px; height: 132px; padding: 18px 28px; border-radius: 26px;
-  background: #fff; transform: rotate(3deg); transform-origin: 70% 50%;
+  background: #fff; transform: rotate(3deg);
   box-shadow: 0 0 0 5px rgba(255,255,255,.28), 0 12px 0 -2px rgba(0,0,0,.22), 0 22px 40px rgba(0,0,0,.28);
 }
