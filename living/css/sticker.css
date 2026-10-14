@@ -501,3 +501,10 @@
 .theme-sticker .pt li:nth-child(3n) { background: color-mix(in srgb, var(--apricot) 45%, var(--card)); }
 .theme-sticker .pt li strong { font-weight: 800; }
 .theme-sticker .pt li p { color: var(--ink); opacity: .8; }
+
+/* 표지·마무리 로고: 로봇 스티커와 같은 흰 스티커 카드로 크게 (2026-10-14) */
+.theme-sticker.layout-cover .logo, .theme-sticker.layout-end .logo {
+  top: 40px; right: 72px; height: 132px; padding: 18px 28px; border-radius: 26px;
+  background: #fff; transform: rotate(3deg); transform-origin: 70% 50%;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.28), 0 12px 0 -2px rgba(0,0,0,.22), 0 22px 40px rgba(0,0,0,.28);
+}
